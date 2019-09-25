@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">TeamManager</string>
+    <string name="loginLabetTV_text">LOGIN</string>
+    <string name="loginEmailET_hint">Enter email address</string>
+    <string name="loginSentBtn_text">SEND</string>
+    <string name="loginRegisterBtn">Register</string>
+    <string name="registerLabelTV_text">REGISTER</string>
+    <string name="registerEmailET_hint">Enter email address</string>
+    <string name="registerPasswordET_hint">Enter password</string>
+    <string name="registerRePasswordET_hint">Enter password again</string>
+    <string name="registerSendBtn_text">SEND</string>
 </resources>

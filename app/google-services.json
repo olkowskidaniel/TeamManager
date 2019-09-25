@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "218218466395",
+    "firebase_url": "https://teammanager-59ac5.firebaseio.com",
+    "project_id": "teammanager-59ac5",
+    "storage_bucket": "teammanager-59ac5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:218218466395:android:cce7e884e4d11ecdec837e",
+        "android_client_info": {
+          "package_name": "com.olkowskidaniel.teammanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "218218466395-sr1skh7c41h9fdqe3sb66k9iluuvok7a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.olkowskidaniel.teammanager",
+            "certificate_hash": "a1047b230879400628c22ccdbed5b39eb4734cd4"
+          }
+        },
+        {
+          "client_id": "218218466395-38dj3mobbpr14tni9e2rl34v43826m44.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDA0u81wfSA75CpYRDn6K8LALUZ2mdSSmU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "218218466395-38dj3mobbpr14tni9e2rl34v43826m44.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
