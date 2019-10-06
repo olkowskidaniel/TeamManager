@@ -58,4 +58,15 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="50dp"/>
+
+    <TextView
+        android:id="@+id/loginMessageTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/loginRegisterBtn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="50dp"
+        android:textColor="@android:color/holo_red_dark"
+        android:textAlignment="center"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

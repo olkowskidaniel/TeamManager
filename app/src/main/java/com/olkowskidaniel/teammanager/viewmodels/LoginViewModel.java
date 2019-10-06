@@ -24,6 +24,10 @@ public class LoginViewModel extends AndroidViewModel {
             if(s.equals("userLoginFailure")) {
                 onLoginFailure();
             }
+
+            if(s.equals("userLoginSuccess")) {
+                onLoginSuccess();
+            }
         }
     };
 
@@ -61,6 +65,10 @@ public class LoginViewModel extends AndroidViewModel {
 
     private void onLoginFailure() {
         getLoginViewModelMessage().setValue("userLoginFailure");
+    }
+
+    private void onLoginSuccess() {
+        getLoginViewModelMessage().setValue("userLoginSuccess");
     }
 
     public MutableLiveData<String> getFirebaseLoginMessageLiveData() {

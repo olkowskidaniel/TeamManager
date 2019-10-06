@@ -26,7 +26,7 @@ public class LoginRepository {
     private final Observer<String> firebaseLoginMessageObserver = new Observer<String>() {
         @Override
         public void onChanged(String s) {
-            firebaseLoginMessage.setValue(s);
+            getFirebaseLoginMessage().setValue(s);
         }
     };
 
