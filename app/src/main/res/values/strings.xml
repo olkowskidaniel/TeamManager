@@ -9,4 +9,5 @@
     <string name="registerPasswordET_hint">Enter password</string>
     <string name="registerRePasswordET_hint">Enter password again</string>
     <string name="registerSendBtn_text">SEND</string>
+    <string name="baseLogoutBtn_text">LOGOUT</string>
 </resources>
