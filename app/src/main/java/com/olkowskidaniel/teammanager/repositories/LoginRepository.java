@@ -3,16 +3,32 @@ package com.olkowskidaniel.teammanager.repositories;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.olkowskidaniel.teammanager.remotedata.FirebaseLogin;
 
 public class LoginRepository {
     private static LoginRepository instance = null;
     private FirebaseLogin firebaseLogin;
-    private LiveData<String> firebaseLoginFailureMessage;
-    //private final LiveData<String> firebaseLoginMessage = Transformations.map(firebaseLogin.getFirebaseLoginMessage(), message -> message);;
+    private MutableLiveData<String> firebaseLoginFailureMessage;
+    private MutableLiveData<String> firebaseLoginMessage;
 
+    //observers
+    private final Observer<String> firebaseLoginFailureMessageObserver = new Observer<String>() {
+        @Override
+        public void onChanged(String s) {
+            getFirebaseLoginFailureMessage().setValue(s);
+            Log.d("LoginRepository", s);
+        }
+    };
+
+    private final Observer<String> firebaseLoginMessageObserver = new Observer<String>() {
+        @Override
+        public void onChanged(String s) {
+            firebaseLoginMessage.setValue(s);
+        }
+    };
 
     public static LoginRepository getInstance() {
         if(instance == null) {
@@ -23,7 +39,12 @@ public class LoginRepository {
 
     private LoginRepository () {
         firebaseLogin = new FirebaseLogin();
-        firebaseLoginFailureMessage = Transformations.map(firebaseLogin.getFirebaseLoginFailureMessage(), this::mapFunction);
+        firebaseLoginFailureMessage = new MutableLiveData<>();
+        firebaseLoginMessage = new MutableLiveData<>();
+
+        firebaseLogin.getFirebaseLoginFailureMessage().observeForever(firebaseLoginFailureMessageObserver);
+
+        firebaseLogin.getFirebaseLoginMessage().observeForever(firebaseLoginMessageObserver);
     }
 
     private String mapFunction(String message) {
@@ -35,12 +56,18 @@ public class LoginRepository {
     public void onLoginRequest(String email, String password) {
         firebaseLogin.signInWithEmail(email, password);
     }
-//
-//    public LiveData<String> getFirebaseLoginMessage() {
-//        return firebaseLoginMessage;
-//    }
 
-    public LiveData<String> getFirebaseLoginFailureMessage() {
+    public MutableLiveData<String> getFirebaseLoginMessage() {
+        return firebaseLoginMessage;
+    }
+
+    public MutableLiveData<String> getFirebaseLoginFailureMessage() {
         return firebaseLoginFailureMessage;
+    }
+
+    public void removeObservers() {
+        firebaseLogin.getFirebaseLoginMessage().removeObserver(firebaseLoginMessageObserver);
+        firebaseLogin.getFirebaseLoginFailureMessage().removeObserver(firebaseLoginFailureMessageObserver);
+        Log.d("LoginRepository", "observers removed");
     }
 }
