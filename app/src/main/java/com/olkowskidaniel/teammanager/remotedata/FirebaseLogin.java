@@ -16,17 +16,17 @@ public class FirebaseLogin {
 
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentFirebaseUser;
-    private MutableLiveData<String> firebaseLoginMessage;
-    private MutableLiveData<String> firebaseLoginFailureMessage;
+    private MutableLiveData<String> firebaseMessage;
+    private MutableLiveData<String> firebaseFailureMessage;
 
 
     public FirebaseLogin() {
         firebaseAuth = FirebaseAuth.getInstance();
         currentFirebaseUser = firebaseAuth.getCurrentUser();
-        firebaseLoginMessage = new MutableLiveData<>();
-        firebaseLoginFailureMessage = new MutableLiveData<>();
-        firebaseLoginMessage.setValue("defaultMessage");
-        firebaseLoginFailureMessage.setValue("defaultMessage");
+        firebaseMessage = new MutableLiveData<>();
+        firebaseMessage.setValue("defaultMessage");
+        firebaseFailureMessage = new MutableLiveData<>();
+        firebaseFailureMessage.setValue("defaultMessage");
     }
 
     public void signInWithEmail(String email, String password) {
@@ -34,12 +34,28 @@ public class FirebaseLogin {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Log.d("FirebaseLogin", "Logged in successfully");
-                    getFirebaseLoginMessage().setValue("userLoginSuccess");
+                    Log.d("FirebaseLogin", email + " logged in successfully");
+                    getFirebaseMessage().setValue("userLoginSuccess");
                 } else {
-                    getFirebaseLoginMessage().setValue("userLoginFailure");
-                    getFirebaseLoginFailureMessage().setValue(task.getException().getMessage());
-                    Log.d("FirebaseLogin", getFirebaseLoginFailureMessage().getValue());
+                    getFirebaseMessage().setValue("userLoginFailure");
+                    getFirebaseFailureMessage().setValue(task.getException().getMessage());
+                    Log.d("FirebaseLogin", getFirebaseFailureMessage().getValue());
+                }
+            }
+        });
+    }
+
+    public void registerWithEmail(String email, String password) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d("FirebaseLogin", "User " + email + " created");
+                    getFirebaseMessage().setValue("registerSuccess");
+                }
+                else {
+                    getFirebaseMessage().setValue("registerFailure");
+                    getFirebaseFailureMessage().setValue(task.getException().getMessage());
                 }
             }
         });
@@ -52,14 +68,14 @@ public class FirebaseLogin {
     public void logout() {
         firebaseAuth.signOut();
         Log.d("FirebaseLogin", "Logged out");
-        getFirebaseLoginMessage().setValue("userLoggedOut");
+        getFirebaseMessage().setValue("userLoggedOut");
     }
 
-    public MutableLiveData<String> getFirebaseLoginMessage() {
-        return firebaseLoginMessage;
+    public MutableLiveData<String> getFirebaseMessage() {
+        return firebaseMessage;
     }
 
-    public MutableLiveData<String> getFirebaseLoginFailureMessage() {
-        return firebaseLoginFailureMessage;
+    public MutableLiveData<String> getFirebaseFailureMessage() {
+        return firebaseFailureMessage;
     }
 }

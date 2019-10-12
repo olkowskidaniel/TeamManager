@@ -24,7 +24,7 @@
         app:layout_constraintTop_toBottomOf="@id/registerLabelTV"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:inputType="textEmailAddress"
         android:hint="@string/registerEmailET_hint"/>
     <EditText
@@ -34,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@id/registerEmailET"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:inputType="textPassword"
         android:hint="@string/registerPasswordET_hint"/>
 
@@ -45,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@id/registerPasswordET"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:inputType="textPassword"
         android:hint="@string/registerRePasswordET_hint"/>
     <Button
@@ -55,7 +55,7 @@
         app:layout_constraintTop_toBottomOf="@id/registerRePasswordET"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:text="@string/registerSendBtn_text"
         android:hint="@string/registerRePasswordET_hint"/>
 

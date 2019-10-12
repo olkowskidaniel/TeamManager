@@ -60,7 +60,7 @@
         android:layout_marginTop="50dp"/>
 
     <TextView
-        android:id="@+id/loginMessageTV"
+        android:id="@+id/loginFailureMessageTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/loginRegisterBtn"

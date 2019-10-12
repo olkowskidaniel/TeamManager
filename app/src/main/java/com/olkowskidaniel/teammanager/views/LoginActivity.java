@@ -31,8 +31,10 @@ public class LoginActivity extends AppCompatActivity {
     EditText loginPasswordET;
     @BindView(R.id.loginSendBtn)
     Button loginSendBtn;
-    @BindView(R.id.loginMessageTV)
-    TextView loginMessageTV;
+    @BindView(R.id.loginRegisterBtn)
+    Button loginRegisterButton;
+    @BindView(R.id.loginFailureMessageTV)
+    TextView loginFailureMessageTV;
     private User currentUser;
 
 
@@ -54,33 +56,41 @@ public class LoginActivity extends AppCompatActivity {
                     baseIntent.putExtra("userEmail", currentUser.getEmail());
                     startActivity(baseIntent);
                 }
+                if(s.equals("startRegisterActivity")) {
+                    Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                    startActivity(registerIntent);
+                }
             }
         };
 
-        final Observer<String> firebaseLoginMessageObserver = new Observer<String>() {
+        final Observer<String> firebaseMessageObserver = new Observer<String>() {
             @Override
             public void onChanged(String s) {
             }
         };
 
-        final Observer<String> firebaseLoginFailureMessageObserver = new Observer<String>() {
+        final Observer<String> firebaseFailureMessageObserver = new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 Log.d("LoginViewModel", s);
                 if(!s.equals("defaultMessage")) {
-                    loginMessageTV.setText(s);
+                    loginFailureMessageTV.setText(s);
                 }
             }
         };
 
         loginViewModel.getLoginViewModelMessage().observe(this, loginViewModelMessageObserver);
-        loginViewModel.getFirebaseLoginMessageLiveData().observe(this, firebaseLoginMessageObserver);
-        loginViewModel.getFirebaseLoginFailureMesageLiveData().observe(this, firebaseLoginFailureMessageObserver);
+        loginViewModel.getFirebaseMessageLiveData().observe(this, firebaseMessageObserver);
+        loginViewModel.getFirebaseFailureMesageLiveData().observe(this, firebaseFailureMessageObserver);
     }
 
     @OnClick(R.id.loginSendBtn)
-    void onLoginSendBtnClicked() {
+    void loginSendBtnClicked() {
         loginViewModel.onLoginSendButtonClicked(loginEmailET.getText().toString().trim(), loginPasswordET.getText().toString().trim());
+    }
+    @OnClick(R.id.loginRegisterBtn)
+    void loginRegisterBtnClicked() {
+        loginViewModel.onLoginRegisterButtonClicked();
     }
 
     @Override
