@@ -10,4 +10,9 @@
     <string name="registerRePasswordET_hint">Enter password again</string>
     <string name="registerSendBtn_text">SEND</string>
     <string name="baseLogoutBtn_text">LOGOUT</string>
+    <string name="passwordMissmatchMessage">Passwords don\'t match</string>
+    <string name="baseBottomNav_personnel_title">PERSONNEL</string>
+    <string name="baseBottomNav_tasks_title">TASKS</string>
+    <string name="baseBottomNav_schedule_title">SCHEDULE</string>
+    <string name="baseOptionsMenu_logout_title">Logout</string>
 </resources>

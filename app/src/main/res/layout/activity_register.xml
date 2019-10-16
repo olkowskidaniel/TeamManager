@@ -58,5 +58,14 @@
         android:layout_marginTop="40dp"
         android:text="@string/registerSendBtn_text"
         android:hint="@string/registerRePasswordET_hint"/>
+    <TextView
+        android:id="@+id/registerFailureMessageTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        app:layout_constraintTop_toBottomOf="@id/registerSendBtn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="40dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,17 +5,14 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.olkowskidaniel.teammanager.R;
-import com.olkowskidaniel.teammanager.model.User;
 import com.olkowskidaniel.teammanager.viewmodels.LoginViewModel;
+import com.olkowskidaniel.teammanager.views.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,8 +32,6 @@ public class LoginActivity extends AppCompatActivity {
     Button loginRegisterButton;
     @BindView(R.id.loginFailureMessageTV)
     TextView loginFailureMessageTV;
-    private User currentUser;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +41,16 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
 
         //TODO: get email from firebaselogin
-        currentUser = new User("sample email");
 
         final Observer<String> loginViewModelMessageObserver = new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                if(s.equals("userLoginSuccess")) {
+                if(s.equals("startBaseActivity")) {
+                    loginFailureMessageTV.setText("");
                     Intent baseIntent = new Intent(LoginActivity.this, BaseActivity.class);
-                    baseIntent.putExtra("userEmail", currentUser.getEmail());
                     startActivity(baseIntent);
                 }
+
                 if(s.equals("startRegisterActivity")) {
                     Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
                     startActivity(registerIntent);
@@ -72,12 +67,12 @@ public class LoginActivity extends AppCompatActivity {
         final Observer<String> firebaseFailureMessageObserver = new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                Log.d("LoginViewModel", s);
                 if(!s.equals("defaultMessage")) {
                     loginFailureMessageTV.setText(s);
                 }
             }
         };
+
 
         loginViewModel.getLoginViewModelMessage().observe(this, loginViewModelMessageObserver);
         loginViewModel.getFirebaseMessageLiveData().observe(this, firebaseMessageObserver);

@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.olkowskidaniel.teammanager.repositories.MainRepository;
+import com.olkowskidaniel.teammanager.repositories.UserRepository;
 
 public class MainViewModel extends AndroidViewModel {
 
@@ -21,11 +21,11 @@ public class MainViewModel extends AndroidViewModel {
 
     public void onActivityStarted() {
         getMainViewModelMessage().setValue("activityStarted");
-        if(MainRepository.getInstance().getCurrentUser() == null) {
+        if(UserRepository.getInstance().getCurrentUser() == null) {
             getMainViewModelMessage().setValue("startLoginActivity");
         } else {
             getMainViewModelMessage().setValue("startBaseActivity");
-            getUserEmailLiveData().setValue(MainRepository.getInstance().getCurrentUser().getEmail());
+            getUserEmailLiveData().setValue(UserRepository.getInstance().getCurrentUser().getEmail());
         }
     }
 

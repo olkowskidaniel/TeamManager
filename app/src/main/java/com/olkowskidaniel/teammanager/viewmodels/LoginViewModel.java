@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.olkowskidaniel.teammanager.model.User;
 import com.olkowskidaniel.teammanager.repositories.UserRepository;
 
 public class LoginViewModel extends AndroidViewModel {
@@ -72,7 +73,7 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     private void onLoginSuccess() {
-        getLoginViewModelMessage().setValue("userLoginSuccess");
+        getLoginViewModelMessage().setValue("startBaseActivity");
     }
 
     public MutableLiveData<String> getFirebaseMessageLiveData() {
@@ -86,5 +87,4 @@ public class LoginViewModel extends AndroidViewModel {
     public MutableLiveData<String> getLoginViewModelMessage() {
         return loginViewModelMessage;
     }
-
 }

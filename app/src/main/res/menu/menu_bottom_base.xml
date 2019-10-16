@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <item
+            android:id="@+id/baseBottomNav_personnel"
+            android:icon="@drawable/ic_personnel"
+            android:title="@string/baseBottomNav_personnel_title"/>
+        <item
+            android:id="@+id/baseBottomNav_tasks"
+            android:icon="@drawable/ic_tasks"
+            android:title="@string/baseBottomNav_tasks_title"/>
+        <item
+            android:id="@+id/baseBottomNav_schedule"
+            android:icon="@drawable/ic_schedule"
+            android:title="@string/baseBottomNav_schedule_title"/>
+</menu>

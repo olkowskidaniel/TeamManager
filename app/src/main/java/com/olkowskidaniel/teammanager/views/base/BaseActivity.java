@@ -1,23 +1,24 @@
-package com.olkowskidaniel.teammanager.views;
+package com.olkowskidaniel.teammanager.views.base;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.olkowskidaniel.teammanager.R;
+import com.olkowskidaniel.teammanager.model.User;
 import com.olkowskidaniel.teammanager.viewmodels.BaseViewModel;
+import com.olkowskidaniel.teammanager.views.MainActivity;
 
-import org.w3c.dom.Text;
-
-import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -25,15 +26,12 @@ public class BaseActivity extends AppCompatActivity {
 
     @BindView(R.id.baseUserEmailTV)
     TextView baseUserEmailTV;
-    @BindView(R.id.baseLogoutBtn)
-    Button baseLogoutBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
         ButterKnife.bind(this);
-        baseUserEmailTV.setText(getIntent().getExtras().getString("userEmail"));
         baseViewModel = ViewModelProviders.of(this).get(BaseViewModel.class);
 
         final Observer<String> baseViewModelMessageObserver = new Observer<String>() {
@@ -46,7 +44,15 @@ public class BaseActivity extends AppCompatActivity {
             }
         };
 
+        final Observer<User> currentUserObserver = new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                baseUserEmailTV.setText(user.getEmail());
+            }
+        };
+
         baseViewModel.getBaseViewModelMessage().observe(this, baseViewModelMessageObserver);
+        baseViewModel.getCurrentUserLiveData().observe(this, currentUserObserver);
     }
 
     @Override
@@ -55,8 +61,29 @@ public class BaseActivity extends AppCompatActivity {
         baseViewModel.onActivityStarted();
     }
 
-    @OnClick(R.id.baseLogoutBtn)
-    void onLogoutButtonClicked() {
-        baseViewModel.onLogoutButtonClicked();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_options_base, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.baseOptionsMenu_logout:
+                baseViewModel.onLogoutButtonClicked();
+                return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+        }
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        baseViewModel.removeObservers();
     }
 }

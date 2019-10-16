@@ -9,6 +9,7 @@ import android.os.Bundle;
 import com.olkowskidaniel.teammanager.R;
 import com.olkowskidaniel.teammanager.model.User;
 import com.olkowskidaniel.teammanager.viewmodels.MainViewModel;
+import com.olkowskidaniel.teammanager.views.base.BaseActivity;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.olkowskidaniel.teammanager.model.User;
 import com.olkowskidaniel.teammanager.remotedata.FirebaseLogin;
 
 public class UserRepository {
@@ -20,6 +21,7 @@ public class UserRepository {
         @Override
         public void onChanged(String s) {
             getFirebaseMessage().setValue(s);
+            Log.d("UserRepository", s);
         }
     };
 
@@ -27,6 +29,7 @@ public class UserRepository {
         @Override
         public void onChanged(String s) {
             getFirebaseFailureMessage().setValue(s);
+            Log.d("UserRepository", s);
         }
     };
 
@@ -60,6 +63,19 @@ public class UserRepository {
 
     public void requestLoginWithEmail(String email, String password) {
         firebaseLogin.signInWithEmail(email, password);
+    }
+
+    public User getCurrentUser() {
+        if(firebaseLogin.getCurrentFirebaseUser() == null) {
+            return null;
+        } else {
+            User currentUser = new User (firebaseLogin.getCurrentFirebaseUser().getEmail());
+            return currentUser;
+        }
+    }
+
+    public void onLogoutRequest() {
+        firebaseLogin.logout();
     }
 
     public void removeObservers() {

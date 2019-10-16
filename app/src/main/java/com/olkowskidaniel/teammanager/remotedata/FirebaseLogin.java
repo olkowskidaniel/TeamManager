@@ -36,6 +36,7 @@ public class FirebaseLogin {
                 if (task.isSuccessful()) {
                     Log.d("FirebaseLogin", email + " logged in successfully");
                     getFirebaseMessage().setValue("userLoginSuccess");
+                    currentFirebaseUser = firebaseAuth.getCurrentUser();
                 } else {
                     getFirebaseMessage().setValue("userLoginFailure");
                     getFirebaseFailureMessage().setValue(task.getException().getMessage());
@@ -67,6 +68,7 @@ public class FirebaseLogin {
 
     public void logout() {
         firebaseAuth.signOut();
+        currentFirebaseUser = null;
         Log.d("FirebaseLogin", "Logged out");
         getFirebaseMessage().setValue("userLoggedOut");
     }
