@@ -1,4 +1,4 @@
-package com.olkowskidaniel.teammanager.viewmodels;
+package com.olkowskidaniel.teammanager.viewmodels.base;
 
 import android.app.Application;
 import android.util.Log;
@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.olkowskidaniel.teammanager.R;
 import com.olkowskidaniel.teammanager.model.User;
 import com.olkowskidaniel.teammanager.repositories.UserRepository;
 
@@ -57,5 +58,22 @@ public class BaseViewModel extends AndroidViewModel {
     public void removeObservers() {
         UserRepository.getInstance().getFirebaseMessage().removeObserver(firebaseMessageObserver);
         UserRepository.getInstance().removeObservers();
+    }
+
+    public void onBottomNavItemClicked(int itemId) {
+        switch(itemId) {
+            case R.id.baseBottomNav_home:
+                getBaseViewModelMessage().setValue("startHomeFragment");
+                break;
+            case R.id.baseBottomNav_personnel:
+                getBaseViewModelMessage().setValue("startPersonnelFragment");
+                break;
+            case R.id.baseBottomNav_tasks:
+                getBaseViewModelMessage().setValue("startTasksFragment");
+                break;
+            case R.id.baseBottomNav_schedule:
+                getBaseViewModelMessage().setValue("startScheduleFragment");
+                break;
+        }
     }
 }

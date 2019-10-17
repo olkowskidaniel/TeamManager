@@ -10,11 +10,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.olkowskidaniel.teammanager.R;
 import com.olkowskidaniel.teammanager.model.User;
-import com.olkowskidaniel.teammanager.viewmodels.BaseViewModel;
+import com.olkowskidaniel.teammanager.viewmodels.base.BaseViewModel;
 import com.olkowskidaniel.teammanager.views.MainActivity;
 
 import butterknife.BindView;
@@ -24,8 +24,8 @@ public class BaseActivity extends AppCompatActivity {
 
     private BaseViewModel baseViewModel;
 
-    @BindView(R.id.baseUserEmailTV)
-    TextView baseUserEmailTV;
+    @BindView(R.id.baseBottomNav)
+    BottomNavigationView baseBottomNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +33,29 @@ public class BaseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_base);
         ButterKnife.bind(this);
         baseViewModel = ViewModelProviders.of(this).get(BaseViewModel.class);
+        baseBottomNav.setOnNavigationItemSelectedListener(baseBottomNavItemSelectedListener);
+        getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new HomeFragment()).commit();
 
         final Observer<String> baseViewModelMessageObserver = new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                if(s.equals("startMainActivity")) {
-                    Intent mainIntent = new Intent(BaseActivity.this, MainActivity.class);
-                    startActivity(mainIntent);
+                switch (s){
+                    case "startMainActivity":
+                        Intent mainIntent = new Intent(BaseActivity.this, MainActivity.class);
+                        startActivity(mainIntent);
+                        break;
+                    case "startHomeFragment":
+                        getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new HomeFragment()).commit();
+                        break;
+                    case "startPersonnelFragment":
+                        getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new PersonnelFragment()).commit();
+                        break;
+                    case "startTasksFragment":
+                        getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new TasksFragment()).commit();
+                        break;
+                    case "startScheduleFragment":
+                        getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new ScheduleFragment()).commit();
+                        break;
                 }
             }
         };
@@ -47,13 +63,21 @@ public class BaseActivity extends AppCompatActivity {
         final Observer<User> currentUserObserver = new Observer<User>() {
             @Override
             public void onChanged(User user) {
-                baseUserEmailTV.setText(user.getEmail());
+                //TODO: empty here
             }
         };
 
         baseViewModel.getBaseViewModelMessage().observe(this, baseViewModelMessageObserver);
         baseViewModel.getCurrentUserLiveData().observe(this, currentUserObserver);
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener baseBottomNavItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            baseViewModel.onBottomNavItemClicked(menuItem.getItemId());
+            return true;
+        }
+    };
 
     @Override
     protected void onStart() {
@@ -77,8 +101,6 @@ public class BaseActivity extends AppCompatActivity {
                 default:
                     return super.onOptionsItemSelected(item);
         }
-
-
     }
 
     @Override
