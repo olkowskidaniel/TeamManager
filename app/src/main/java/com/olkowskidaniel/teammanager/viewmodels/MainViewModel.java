@@ -4,33 +4,45 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
-import com.olkowskidaniel.teammanager.repositories.UserRepository;
+import com.olkowskidaniel.teammanager.managers.UserManager;
+
 
 public class MainViewModel extends AndroidViewModel {
-
-    private MutableLiveData<String> mainViewModelMessage;
-    private MutableLiveData<String> userEmailLiveData;
+    private static final String TAG = "MainViewModel";
+    private LiveData<Boolean> isUserLoggedLiveData = Transformations.map(UserManager.getInstance().getIsUserLoggedLiveData(), bool -> bool);
+    private MutableLiveData<String> startActivityEvent;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
-        mainViewModelMessage = new MutableLiveData<>();
-        userEmailLiveData = new MutableLiveData<>();
+        startActivityEvent = new MutableLiveData<>();
     }
 
     public void onActivityStarted() {
-        getMainViewModelMessage().setValue("activityStarted");
-        if(UserRepository.getInstance().getCurrentUser() == null) {
-            getMainViewModelMessage().setValue("startLoginActivity");
-        } else {
-            getMainViewModelMessage().setValue("startBaseActivity");
-            getUserEmailLiveData().setValue(UserRepository.getInstance().getCurrentUser().getEmail());
+        if(UserManager.getInstance().getIsUserLogged()) {
+            startActivityEvent.setValue("BaseActivity");
+        } else if (!UserManager.getInstance().getIsUserLogged()) {
+            startActivityEvent.setValue("LoginActivity");
         }
     }
 
-    public MutableLiveData<String> getMainViewModelMessage() {
-        return mainViewModelMessage;
+    public LiveData<Boolean> getIsUserLoggedLiveData() {
+        return isUserLoggedLiveData;
     }
-    public MutableLiveData<String> getUserEmailLiveData() {return userEmailLiveData;}
+
+    public MutableLiveData<String> getStartActivityEvent() {
+        return startActivityEvent;
+    }
+
+    public void isUserLogged(Boolean bool) {
+        if(bool) {
+            startActivityEvent.setValue("BaseActivity");
+        }
+        else {
+            startActivityEvent.setValue("LoginActivity");
+        }
+    }
 }

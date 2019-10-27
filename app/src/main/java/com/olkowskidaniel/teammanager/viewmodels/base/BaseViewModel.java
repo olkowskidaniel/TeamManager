@@ -5,75 +5,54 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 
 import com.olkowskidaniel.teammanager.R;
-import com.olkowskidaniel.teammanager.model.User;
-import com.olkowskidaniel.teammanager.repositories.UserRepository;
+import com.olkowskidaniel.teammanager.managers.UserManager;
 
 public class BaseViewModel extends AndroidViewModel {
-
-    private MutableLiveData<String> baseViewModelMessage;
-    private MutableLiveData<User> currentUserLiveData;
-
-    private final Observer<String> firebaseMessageObserver = new Observer<String>() {
-        @Override
-        public void onChanged(String s) {
-            if(s.equals("userLoggedOut")) {
-                startMainActivity();
-                Log.d("BaseViewModel", "starting MainActivity");
-            }
-        }
-    };
+    private static final String TAG = "BaseViewModel";
+    private LiveData<Boolean> isUserLoggedLiveData = Transformations.map(UserManager.getInstance().getIsUserLoggedLiveData(), bool -> bool);
+    private MutableLiveData<String> startActivityEvent;
 
     public BaseViewModel(@NonNull Application application) {
         super(application);
-        baseViewModelMessage = new MutableLiveData<>();
-        currentUserLiveData = new MutableLiveData<>();
-        UserRepository.getInstance().getFirebaseMessage().observeForever(firebaseMessageObserver);
+        startActivityEvent = new MutableLiveData<>();
     }
 
     public void onLogoutButtonClicked() {
-        UserRepository.getInstance().onLogoutRequest();
+        UserManager.getInstance().logout();
+        Log.d("BaseViewModel", "onLogoutButtonClicked");
     }
 
-    public MutableLiveData<String> getBaseViewModelMessage() {
-        return baseViewModelMessage;
-    }
-
-    public void onActivityStarted() {
-        getBaseViewModelMessage().setValue("baseActivityStarted");
-        getCurrentUserLiveData().setValue(UserRepository.getInstance().getCurrentUser());
-    }
-
-    private void startMainActivity() {
-        getBaseViewModelMessage().setValue("startMainActivity");
-    }
-
-    public MutableLiveData<User> getCurrentUserLiveData() {
-        return currentUserLiveData;
-    }
-
-    public void removeObservers() {
-        UserRepository.getInstance().getFirebaseMessage().removeObserver(firebaseMessageObserver);
-        UserRepository.getInstance().removeObservers();
-    }
 
     public void onBottomNavItemClicked(int itemId) {
         switch(itemId) {
             case R.id.baseBottomNav_home:
-                getBaseViewModelMessage().setValue("startHomeFragment");
                 break;
             case R.id.baseBottomNav_personnel:
-                getBaseViewModelMessage().setValue("startPersonnelFragment");
                 break;
             case R.id.baseBottomNav_tasks:
-                getBaseViewModelMessage().setValue("startTasksFragment");
                 break;
             case R.id.baseBottomNav_schedule:
-                getBaseViewModelMessage().setValue("startScheduleFragment");
                 break;
+        }
+    }
+
+    public LiveData<Boolean> getIsUserLoggedLiveData() {
+        return isUserLoggedLiveData;
+    }
+
+    public MutableLiveData<String> getStartActivityEvent() {
+        return startActivityEvent;
+    }
+
+    public void isUserLogged(Boolean bool) {
+        if(!bool) {
+            startActivityEvent.setValue("MainActivity");
+            Log.d(TAG, "Starting Main Activity");
         }
     }
 }

@@ -5,86 +5,53 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
+import androidx.lifecycle.Transformations;
 
-import com.olkowskidaniel.teammanager.model.User;
-import com.olkowskidaniel.teammanager.repositories.UserRepository;
+import com.olkowskidaniel.teammanager.managers.UserManager;
+
 
 public class LoginViewModel extends AndroidViewModel {
 
-    private MutableLiveData<String> firebaseMessageLiveData;
-    private MutableLiveData<String> firebaseFailureMesageLiveData;
-    private MutableLiveData<String> loginViewModelMessage;
+    private static final String TAG = "LoginViewModel";
+    private LiveData<Boolean> isUserLoggedLiveData = Transformations.map(UserManager.getInstance().getIsUserLoggedLiveData(), bool -> bool);
+    private LiveData<String> loginFailureMessageLiveData = Transformations.map(UserManager.getInstance().getLoginFailureMessageLiveData(), message -> message);
 
-    //observers
-    private final Observer<String> firebaseMessageObserver = new Observer<String>() {
-        @Override
-        public void onChanged(String s) {
-            getFirebaseMessageLiveData().setValue(s);
-            if(s.equals("userLoginFailure")) {
-                onLoginFailure();
-            }
 
-            if(s.equals("userLoginSuccess")) {
-                onLoginSuccess();
-            }
-        }
-    };
+    private MutableLiveData<String> startActivityEvent;
 
-    private final Observer<String> firebaseFailureMessageObserver = new Observer<String>() {
-        @Override
-        public void onChanged(String s) {
-            getFirebaseFailureMesageLiveData().setValue(s);
-        }
-    };
 
     public LoginViewModel(@NonNull Application application) {
         super(application);
-        firebaseMessageLiveData = new MutableLiveData<>();
-        firebaseFailureMesageLiveData = new MutableLiveData<>();
-        loginViewModelMessage = new MutableLiveData<>();
-        UserRepository.getInstance().getFirebaseMessage().observeForever(firebaseMessageObserver);
-        UserRepository.getInstance().getFirebaseFailureMessage().observeForever(firebaseFailureMessageObserver);
-        getLoginViewModelMessage().setValue("defaultLoginViewModelMessage");
+        startActivityEvent = new MutableLiveData<>();
     }
 
     public void onLoginSendButtonClicked(String email, String password) {
-        UserRepository.getInstance().requestLoginWithEmail(email, password);
+        UserManager.getInstance().signInWithEmail(email, password);
     }
 
     public void onLoginRegisterButtonClicked() {
-        getLoginViewModelMessage().setValue("startRegisterActivity");
+        startActivityEvent.setValue("RegisterActivity");
+        UserManager.getInstance().resetFailureMessages();
     }
 
-    public void onActivityDestroy() {
-        UserRepository.getInstance().removeObservers();
-        removeObservers();
+    public LiveData<Boolean> getIsUserLoggedLiveData() {
+        return isUserLoggedLiveData;
     }
 
-    private void removeObservers() {
-        UserRepository.getInstance().getFirebaseMessage().removeObserver(firebaseMessageObserver);
-        UserRepository.getInstance().getFirebaseFailureMessage().removeObserver(firebaseFailureMessageObserver);
-        Log.d("LoginViewModel", "observers removed");
+    public LiveData<String> getLoginFailureMessageLiveData() {
+        return loginFailureMessageLiveData;
     }
 
-    private void onLoginFailure() {
-        getLoginViewModelMessage().setValue("userLoginFailure");
+    public MutableLiveData<String> getStartActivityEvent() {
+        return startActivityEvent;
     }
 
-    private void onLoginSuccess() {
-        getLoginViewModelMessage().setValue("startBaseActivity");
-    }
-
-    public MutableLiveData<String> getFirebaseMessageLiveData() {
-        return firebaseMessageLiveData;
-    }
-
-    public MutableLiveData<String> getFirebaseFailureMesageLiveData() {
-        return firebaseFailureMesageLiveData;
-    }
-
-    public MutableLiveData<String> getLoginViewModelMessage() {
-        return loginViewModelMessage;
+    public void isUserLogged(Boolean bool) {
+        if(bool) {
+            startActivityEvent.setValue("MainActivity");
+            Log.d(TAG, "Starting MainActivity");
+        }
     }
 }

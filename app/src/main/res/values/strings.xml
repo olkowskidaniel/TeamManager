@@ -15,8 +15,6 @@
     <string name="baseBottomNav_tasks_title">TASKS</string>
     <string name="baseBottomNav_schedule_title">SCHEDULE</string>
     <string name="baseOptionsMenu_logout_title">Logout</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="baseBottomNav_home_title">HOME</string>
 </resources>

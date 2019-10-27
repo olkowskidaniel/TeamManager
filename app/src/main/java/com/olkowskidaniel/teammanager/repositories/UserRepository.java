@@ -1,37 +1,16 @@
 package com.olkowskidaniel.teammanager.repositories;
 
-import android.util.Log;
 
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
+import com.olkowskidaniel.teammanager.remotedata.Firestore;
 
-import com.olkowskidaniel.teammanager.model.User;
-import com.olkowskidaniel.teammanager.remotedata.FirebaseLogin;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserRepository {
 
     private static UserRepository instance = null;
 
-    private FirebaseLogin firebaseLogin;
-    private MutableLiveData<String> firebaseFailureMessage;
-    private MutableLiveData<String> firebaseMessage;
-
-
-    private final Observer<String> firebaseMessageObserver = new Observer<String>() {
-        @Override
-        public void onChanged(String s) {
-            getFirebaseMessage().setValue(s);
-            Log.d("UserRepository", s);
-        }
-    };
-
-    private final Observer<String> firebaseFailureMessageObserver = new Observer<String>() {
-        @Override
-        public void onChanged(String s) {
-            getFirebaseFailureMessage().setValue(s);
-            Log.d("UserRepository", s);
-        }
-    };
+    private Firestore firestore;
 
 
     public static UserRepository getInstance() {
@@ -42,45 +21,13 @@ public class UserRepository {
     }
 
     private UserRepository() {
-        firebaseLogin = new FirebaseLogin();
-        firebaseMessage = new MutableLiveData<>();
-        firebaseFailureMessage = new MutableLiveData<>();
-        firebaseLogin.getFirebaseMessage().observeForever(firebaseMessageObserver);
-        firebaseLogin.getFirebaseFailureMessage().observeForever(firebaseFailureMessageObserver);
+        firestore = new Firestore();
     }
 
-    public MutableLiveData<String> getFirebaseMessage() {
-        return firebaseMessage;
-    }
 
-    public MutableLiveData<String> getFirebaseFailureMessage() {
-        return firebaseFailureMessage;
-    }
-
-    public void requestRegisterWithEmail(String email, String password) {
-        firebaseLogin.registerWithEmail(email, password);
-    }
-
-    public void requestLoginWithEmail(String email, String password) {
-        firebaseLogin.signInWithEmail(email, password);
-    }
-
-    public User getCurrentUser() {
-        if(firebaseLogin.getCurrentFirebaseUser() == null) {
-            return null;
-        } else {
-            User currentUser = new User (firebaseLogin.getCurrentFirebaseUser().getEmail());
-            return currentUser;
-        }
-    }
-
-    public void onLogoutRequest() {
-        firebaseLogin.logout();
-    }
-
-    public void removeObservers() {
-        firebaseLogin.getFirebaseMessage().removeObserver(firebaseMessageObserver);
-        firebaseLogin.getFirebaseFailureMessage().removeObserver(firebaseFailureMessageObserver);
-        Log.d("RegisterRepository", "observers removed");
+    public void addUserToDatabase(String email) {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("email", email);
+        firestore.addToUsersCollection(userMap);
     }
 }
