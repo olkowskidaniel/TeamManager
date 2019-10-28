@@ -3,4 +3,7 @@
     <item
         android:id="@+id/baseOptionsMenu_logout"
         android:title="@string/baseOptionsMenu_logout_title"/>
+    <item
+        android:id="@+id/baseOptionsMenu_deleteAccount"
+        android:title="@string/baseOptionsMenu_deleteAccount_title"/>
 </menu>

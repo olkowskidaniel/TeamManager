@@ -2,8 +2,11 @@ package com.olkowskidaniel.teammanager.managers;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -16,6 +19,8 @@ public class UserManager {
     private MutableLiveData<FirebaseUser> currentFirebaseUserLiveData;
     private MutableLiveData<Boolean> isUserLoggedLiveData;
     private MutableLiveData<String> loginFailureMessageLiveData;
+    private MutableLiveData<String> registerFailuerMessageLiveData;
+    private MutableLiveData<Boolean> userRegisteredEventLiveData;
     private Boolean isUserLogged;
 
 
@@ -34,6 +39,8 @@ public class UserManager {
         currentFirebaseUserLiveData = new MutableLiveData<>();
         isUserLoggedLiveData = new MutableLiveData<>();
         loginFailureMessageLiveData = new MutableLiveData<>();
+        registerFailuerMessageLiveData = new MutableLiveData<>();
+        userRegisteredEventLiveData = new MutableLiveData<>();
         if(currentFirebaseUser == null) {
             getIsUserLoggedLiveData().setValue(false);
             isUserLogged = false;
@@ -41,6 +48,7 @@ public class UserManager {
             getIsUserLoggedLiveData().setValue(true);
             isUserLogged = true;
         }
+        resetFailureMessages();
     }
 
     public void signInWithEmail(String email, String password) {
@@ -51,6 +59,7 @@ public class UserManager {
                 getCurrentFirebaseUserLiveData().setValue(currentFirebaseUser);
                 getIsUserLoggedLiveData().setValue(true);
                 isUserLogged = true;
+                userRegisteredEventLiveData.setValue(false);
                 loginFailureMessageLiveData.setValue("");
             } else {
                 loginFailureMessageLiveData.setValue(task.getException().getMessage());
@@ -62,7 +71,16 @@ public class UserManager {
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.d(TAG, "User " + email + " created");
+                userRegisteredEventLiveData.setValue(true);
+            } else {
+                registerFailuerMessageLiveData.setValue(task.getException().getMessage());
             }
+        });
+    }
+
+    public void deleteAccount() {
+        currentFirebaseUser.delete().addOnCompleteListener(task -> {
+            Log.d(TAG, "Account " + currentFirebaseUser.getEmail() + " deleted");
         });
     }
 
@@ -85,11 +103,28 @@ public class UserManager {
         return loginFailureMessageLiveData;
     }
 
+    public MutableLiveData<String> getRegisterFailuerMessageLiveData() {
+        return registerFailuerMessageLiveData;
+    }
+
+    public MutableLiveData<Boolean> getUserRegisteredEventLiveData() {
+        return  userRegisteredEventLiveData;
+    }
+
     public Boolean getIsUserLogged() {
         return isUserLogged;
     }
 
     public void resetFailureMessages() {
         loginFailureMessageLiveData.setValue("");
+        registerFailuerMessageLiveData.setValue("");
+    }
+
+    public void resetEvents() {
+        userRegisteredEventLiveData.setValue(false);
+    }
+
+    public void requestPasswordMismatchMessage() {
+        registerFailuerMessageLiveData.setValue("Passwords don't match");
     }
 }

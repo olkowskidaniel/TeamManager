@@ -1,7 +1,6 @@
 package com.olkowskidaniel.teammanager.views;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
@@ -40,12 +39,29 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
         registerViewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
-        registerFailureMessageTV.setText("");
+
+        registerViewModel.getRegisterFailureMessageLiveData().observe(this, message -> registerFailureMessageTV.setText(message));
+        registerViewModel.getUserRegisteredEventLiveData().observe(this, bool -> {
+            if(bool) {
+                registerViewModel.onUserRegisterSuccess();
+                Toast.makeText(RegisterActivity.this, "User registered successfully", Toast.LENGTH_LONG).show();
+            }
+        });
+        registerViewModel.getStartActivityEvent().observe(this, this::startActivityRequest);
     }
 
     @OnClick(R.id.registerSendBtn)
     void registerSendBtnClicked() {
         Log.d("RegisterActivity", "Register button clicked");
         registerViewModel.onRegisterSendBtnClicked(registerEmailET.getText().toString().trim(), registerPasswordET.getText().toString().trim(), registerRePasswordET.getText().toString().trim());
+    }
+
+    private void startActivityRequest(String activityName) {
+        switch (activityName) {
+            case "MainActivity":
+                Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
+                startActivity(mainIntent);
+                break;
+        }
     }
 }

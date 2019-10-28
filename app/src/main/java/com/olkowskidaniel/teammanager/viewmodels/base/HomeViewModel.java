@@ -9,5 +9,4 @@ public class HomeViewModel extends AndroidViewModel {
     public HomeViewModel(@NonNull Application application) {
         super(application);
     }
-    // TODO: Implement the ViewModel
 }

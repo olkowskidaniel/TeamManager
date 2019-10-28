@@ -9,24 +9,37 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.olkowskidaniel.teammanager.R;
 import com.olkowskidaniel.teammanager.managers.UserManager;
+import com.olkowskidaniel.teammanager.model.User;
+import com.olkowskidaniel.teammanager.repositories.UserRepository;
 
 public class BaseViewModel extends AndroidViewModel {
     private static final String TAG = "BaseViewModel";
     private LiveData<Boolean> isUserLoggedLiveData = Transformations.map(UserManager.getInstance().getIsUserLoggedLiveData(), bool -> bool);
+    private LiveData<FirebaseUser> currentFirebaseUserLiveData = Transformations.map(UserManager.getInstance().getCurrentFirebaseUserLiveData(), user -> user);
     private MutableLiveData<String> startActivityEvent;
+    private User currentUser;
 
     public BaseViewModel(@NonNull Application application) {
         super(application);
         startActivityEvent = new MutableLiveData<>();
     }
 
-    public void onLogoutButtonClicked() {
-        UserManager.getInstance().logout();
-        Log.d("BaseViewModel", "onLogoutButtonClicked");
+    public void onOptionsButtonClicked(int itemId) {
+        switch (itemId) {
+            case R.id.baseOptionsMenu_logout:
+                UserManager.getInstance().logout();
+                Log.d(TAG, "onLogoutButtonClicked");
+                break;
+            case R.id.baseOptionsMenu_deleteAccount:
+                UserManager.getInstance().deleteAccount();
+                UserManager.getInstance().logout();
+                UserRepository.getInstance().deleteUserFromDatabase(currentUser.getEmail());
+                break;
+        }
     }
-
 
     public void onBottomNavItemClicked(int itemId) {
         switch(itemId) {
@@ -49,10 +62,19 @@ public class BaseViewModel extends AndroidViewModel {
         return startActivityEvent;
     }
 
+    public LiveData<FirebaseUser> getCurrentFirebaseUserLiveData() {
+        return currentFirebaseUserLiveData;
+    }
+
     public void isUserLogged(Boolean bool) {
         if(!bool) {
             startActivityEvent.setValue("MainActivity");
             Log.d(TAG, "Starting Main Activity");
         }
+    }
+
+    public void setCurrentUser(FirebaseUser user) {
+        currentUser = new User(user.getEmail());
+        Log.d(TAG, "Current user set to: " + currentUser.getEmail());
     }
 }

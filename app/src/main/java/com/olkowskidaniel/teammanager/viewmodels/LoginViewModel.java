@@ -10,6 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.olkowskidaniel.teammanager.managers.UserManager;
+import com.olkowskidaniel.teammanager.model.User;
+import com.olkowskidaniel.teammanager.repositories.UserRepository;
 
 
 public class LoginViewModel extends AndroidViewModel {
@@ -17,7 +19,6 @@ public class LoginViewModel extends AndroidViewModel {
     private static final String TAG = "LoginViewModel";
     private LiveData<Boolean> isUserLoggedLiveData = Transformations.map(UserManager.getInstance().getIsUserLoggedLiveData(), bool -> bool);
     private LiveData<String> loginFailureMessageLiveData = Transformations.map(UserManager.getInstance().getLoginFailureMessageLiveData(), message -> message);
-
 
     private MutableLiveData<String> startActivityEvent;
 

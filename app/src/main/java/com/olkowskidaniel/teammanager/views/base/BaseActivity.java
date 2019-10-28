@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.olkowskidaniel.teammanager.R;
 import com.olkowskidaniel.teammanager.viewmodels.base.BaseViewModel;
-import com.olkowskidaniel.teammanager.views.LoginActivity;
 import com.olkowskidaniel.teammanager.views.MainActivity;
 
 import butterknife.BindView;
@@ -42,6 +41,8 @@ public class BaseActivity extends AppCompatActivity {
 
         baseViewModel.getStartActivityEvent().observe(this, this::startActivityRequest);
 
+        baseViewModel.getCurrentFirebaseUserLiveData().observe(this, user -> baseViewModel.setCurrentUser(user));
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener baseBottomNavItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -66,14 +67,8 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.baseOptionsMenu_logout:
-                baseViewModel.onLogoutButtonClicked();
-                Log.d(TAG, "Logout button clicked");
-                return true;
-                default:
-                    return super.onOptionsItemSelected(item);
-        }
+        baseViewModel.onOptionsButtonClicked(item.getItemId());
+        return super.onOptionsItemSelected(item);
     }
 
     private void startActivityRequest(String activityName) {

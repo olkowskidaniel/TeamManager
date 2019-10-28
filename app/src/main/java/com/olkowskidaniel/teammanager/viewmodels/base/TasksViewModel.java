@@ -9,5 +9,4 @@ public class TasksViewModel extends AndroidViewModel {
     public TasksViewModel(@NonNull Application application) {
         super(application);
     }
-    // TODO: Implement the ViewModel
 }
