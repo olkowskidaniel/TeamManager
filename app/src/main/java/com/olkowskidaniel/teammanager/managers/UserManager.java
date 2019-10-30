@@ -3,6 +3,7 @@ package com.olkowskidaniel.teammanager.managers;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,8 +37,8 @@ public class UserManager {
     private UserManager() {
         firebaseAuth = FirebaseAuth.getInstance();
         currentFirebaseUser = firebaseAuth.getCurrentUser();
-        currentFirebaseUserLiveData = new MutableLiveData<>();
         isUserLoggedLiveData = new MutableLiveData<>();
+        currentFirebaseUserLiveData = new MutableLiveData<>();
         loginFailureMessageLiveData = new MutableLiveData<>();
         registerFailuerMessageLiveData = new MutableLiveData<>();
         userRegisteredEventLiveData = new MutableLiveData<>();
@@ -56,7 +57,7 @@ public class UserManager {
             if (task.isSuccessful()) {
                 Log.d(TAG, email + " logged in");
                 currentFirebaseUser = firebaseAuth.getCurrentUser();
-                getCurrentFirebaseUserLiveData().setValue(currentFirebaseUser);
+                currentFirebaseUserLiveData.setValue(currentFirebaseUser);
                 getIsUserLoggedLiveData().setValue(true);
                 isUserLogged = true;
                 userRegisteredEventLiveData.setValue(false);
@@ -93,7 +94,7 @@ public class UserManager {
         Log.d(TAG, "Logged out");
     }
 
-    public MutableLiveData<FirebaseUser> getCurrentFirebaseUserLiveData() {
+    public LiveData<FirebaseUser> getCurrentFirebaseUserLiveData() {
         return currentFirebaseUserLiveData;
     }
     public MutableLiveData<Boolean> getIsUserLoggedLiveData() {

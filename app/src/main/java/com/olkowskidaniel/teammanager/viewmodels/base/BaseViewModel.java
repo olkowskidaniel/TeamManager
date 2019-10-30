@@ -63,11 +63,11 @@ public class BaseViewModel extends AndroidViewModel {
         return isUserLoggedLiveData;
     }
 
-    public MutableLiveData<String> getStartActivityEvent() {
+    public LiveData<String> getStartActivityEvent() {
         return startActivityEvent;
     }
 
-    public MutableLiveData<String> getStartFragmentEvent() {
+    public LiveData<String> getStartFragmentEvent() {
         return startFragmentEvent;
     }
 

@@ -45,7 +45,7 @@ public class LoginViewModel extends AndroidViewModel {
         return loginFailureMessageLiveData;
     }
 
-    public MutableLiveData<String> getStartActivityEvent() {
+    public LiveData<String> getStartActivityEvent() {
         return startActivityEvent;
     }
 

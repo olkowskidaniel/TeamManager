@@ -38,7 +38,7 @@ public class RegisterViewModel extends AndroidViewModel {
         return registerFailureMessageLiveData;
     }
 
-    public MutableLiveData<String> getStartActivityEvent() {
+    public LiveData<String> getStartActivityEvent() {
         return startActivityEvent;
     }
 
