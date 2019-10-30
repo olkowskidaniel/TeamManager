@@ -39,6 +39,6 @@ public class UserRepository {
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("email", email);
         firestore.deleteUserFromCollection(userMap);
-        Log.d(TAG, "Deleting user: " + email);
+        Log.d(TAG, "Deleting collection: " + email);
     }
 }

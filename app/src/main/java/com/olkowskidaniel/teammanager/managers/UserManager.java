@@ -129,4 +129,8 @@ public class UserManager {
     public void requestPasswordMismatchMessage() {
         registerFailuerMessageLiveData.setValue("Passwords don't match");
     }
+
+    public FirebaseUser getCurrentFirebaseUser() {
+        return currentFirebaseUser;
+    }
 }

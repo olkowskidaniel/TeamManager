@@ -21,12 +21,15 @@ public class BaseViewModel extends AndroidViewModel {
     private LiveData<FirebaseUser> currentFirebaseUserLiveData = Transformations.map(UserManager.getInstance().getCurrentFirebaseUserLiveData(), user -> user);
     private MutableLiveData<String> startActivityEvent;
     private MutableLiveData<String> startFragmentEvent;
+    private MutableLiveData<Boolean> deleteUserConfirmationRequestEvent;
     private User currentUser;
 
     public BaseViewModel(@NonNull Application application) {
         super(application);
         startActivityEvent = new MutableLiveData<>();
         startFragmentEvent = new MutableLiveData<>();
+        deleteUserConfirmationRequestEvent = new MutableLiveData<>();
+        setCurrentUser(UserManager.getInstance().getCurrentFirebaseUser());
     }
 
     public void onOptionsButtonClicked(int itemId) {
@@ -36,8 +39,7 @@ public class BaseViewModel extends AndroidViewModel {
                 Log.d(TAG, "onLogoutButtonClicked");
                 break;
             case R.id.baseOptionsMenu_deleteAccount:
-                UserRepository.getInstance().deleteUserFromDatabase(currentUser.getEmail());
-                UserManager.getInstance().deleteAccount();
+                deleteUserConfirmationRequestEvent.setValue(true);
                 break;
         }
     }
@@ -71,6 +73,10 @@ public class BaseViewModel extends AndroidViewModel {
         return startFragmentEvent;
     }
 
+    public LiveData<Boolean> getDeleteUserConfirmationRequestEvent() {
+        return deleteUserConfirmationRequestEvent;
+    }
+
     public LiveData<FirebaseUser> getCurrentFirebaseUserLiveData() {
         return currentFirebaseUserLiveData;
     }
@@ -85,5 +91,16 @@ public class BaseViewModel extends AndroidViewModel {
     public void setCurrentUser(FirebaseUser user) {
         currentUser = new User(user.getEmail());
         Log.d(TAG, "Current user set to: " + currentUser.getEmail());
+    }
+
+    public void onDeleteAccountConfirmedByUser(Boolean confirmationResult) {
+        if(confirmationResult) {
+            UserRepository.getInstance().deleteUserFromDatabase(currentUser.getEmail());
+            UserManager.getInstance().deleteAccount();
+            deleteUserConfirmationRequestEvent.setValue(false);
+        } else {
+            deleteUserConfirmationRequestEvent.setValue(false);
+        }
+
     }
 }

@@ -22,6 +22,8 @@ public class Firestore {
     public void deleteUserFromCollection(Map<String, Object> userMap) {
         firebaseFirestore.collection("users").document(userMap.get("email").toString()).delete().addOnSuccessListener(aVoid -> {
             Log.d(TAG, "Document " + userMap.get("email").toString() + " successfully deleted");
+        }).addOnFailureListener(aVoid -> {
+            Log.d(TAG, aVoid.getMessage());
         });
     }
 }

@@ -1,10 +1,12 @@
 package com.olkowskidaniel.teammanager.views.base;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,11 +45,11 @@ public class BaseActivity extends AppCompatActivity {
 
         baseViewModel.getCurrentFirebaseUserLiveData().observe(this, user -> baseViewModel.setCurrentUser(user));
 
-        baseViewModel.getStartFragmentEvent().observe(this, fragmentName -> startFragmentRequest(fragmentName));
+        baseViewModel.getStartFragmentEvent().observe(this, this::startFragmentRequest);
+
+        baseViewModel.getDeleteUserConfirmationRequestEvent().observe(this, this::onDeleteUserConfirmationRequest);
 
     }
-
-
 
     private BottomNavigationView.OnNavigationItemSelectedListener baseBottomNavItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -98,6 +100,17 @@ public class BaseActivity extends AppCompatActivity {
             case "ScheduleFragment":
                 getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new ScheduleFragment()).commit();
                 break;
+        }
+    }
+
+    private void onDeleteUserConfirmationRequest(Boolean aBoolean) {
+        if(aBoolean) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Are you sure?").setPositiveButton("Yes", (dialogInterface, i) -> {
+                baseViewModel.onDeleteAccountConfirmedByUser(true);
+            }).setNegativeButton("No", ((dialogInterface, i) -> {
+                baseViewModel.onDeleteAccountConfirmedByUser(false);
+            }) ).show();
         }
     }
 }
