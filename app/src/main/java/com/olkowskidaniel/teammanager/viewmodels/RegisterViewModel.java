@@ -11,12 +11,13 @@ import androidx.lifecycle.Transformations;
 import com.olkowskidaniel.teammanager.managers.UserManager;
 import com.olkowskidaniel.teammanager.model.User;
 import com.olkowskidaniel.teammanager.repositories.UserRepository;
+import com.olkowskidaniel.teammanager.utils.Activities;
 
 public class RegisterViewModel extends AndroidViewModel {
 
     private LiveData<String> registerFailureMessageLiveData = Transformations.map(UserManager.getInstance().getRegisterFailuerMessageLiveData(), message -> message);
     private LiveData<Boolean> userRegisteredEventLiveData = Transformations.map(UserManager.getInstance().getUserRegisteredEventLiveData(), bool -> bool);
-    private MutableLiveData<String> startActivityEvent;
+    private MutableLiveData<Activities> startActivityEvent;
     private User registeringUser;
 
     public RegisterViewModel(@NonNull Application application) {
@@ -38,7 +39,7 @@ public class RegisterViewModel extends AndroidViewModel {
         return registerFailureMessageLiveData;
     }
 
-    public LiveData<String> getStartActivityEvent() {
+    public LiveData<Activities> getStartActivityEvent() {
         return startActivityEvent;
     }
 
@@ -48,7 +49,7 @@ public class RegisterViewModel extends AndroidViewModel {
 
     public void onUserRegisterSuccess() {
         UserRepository.getInstance().addUserToDatabase(registeringUser.getEmail());
-        startActivityEvent.setValue("MainActivity");
+        startActivityEvent.setValue(Activities.Main);
         UserManager.getInstance().resetEvents();
     }
 }

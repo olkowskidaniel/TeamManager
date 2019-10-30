@@ -10,8 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.olkowskidaniel.teammanager.managers.UserManager;
-import com.olkowskidaniel.teammanager.model.User;
-import com.olkowskidaniel.teammanager.repositories.UserRepository;
+import com.olkowskidaniel.teammanager.utils.Activities;
 
 
 public class LoginViewModel extends AndroidViewModel {
@@ -20,7 +19,7 @@ public class LoginViewModel extends AndroidViewModel {
     private LiveData<Boolean> isUserLoggedLiveData = Transformations.map(UserManager.getInstance().getIsUserLoggedLiveData(), bool -> bool);
     private LiveData<String> loginFailureMessageLiveData = Transformations.map(UserManager.getInstance().getLoginFailureMessageLiveData(), message -> message);
 
-    private MutableLiveData<String> startActivityEvent;
+    private MutableLiveData<Activities> startActivityEvent;
 
 
     public LoginViewModel(@NonNull Application application) {
@@ -33,7 +32,7 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     public void onLoginRegisterButtonClicked() {
-        startActivityEvent.setValue("RegisterActivity");
+        startActivityEvent.setValue(Activities.Register);
         UserManager.getInstance().resetFailureMessages();
     }
 
@@ -45,13 +44,13 @@ public class LoginViewModel extends AndroidViewModel {
         return loginFailureMessageLiveData;
     }
 
-    public LiveData<String> getStartActivityEvent() {
+    public LiveData<Activities> getStartActivityEvent() {
         return startActivityEvent;
     }
 
     public void isUserLogged(Boolean bool) {
         if(bool) {
-            startActivityEvent.setValue("MainActivity");
+            startActivityEvent.setValue(Activities.Main);
             Log.d(TAG, "Starting MainActivity");
         }
     }

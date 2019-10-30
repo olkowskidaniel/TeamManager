@@ -3,19 +3,16 @@ package com.olkowskidaniel.teammanager.views.base;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.olkowskidaniel.teammanager.R;
+import com.olkowskidaniel.teammanager.utils.Activities;
+import com.olkowskidaniel.teammanager.utils.Fragments;
 import com.olkowskidaniel.teammanager.viewmodels.base.BaseViewModel;
 import com.olkowskidaniel.teammanager.views.MainActivity;
 
@@ -77,27 +74,27 @@ public class BaseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void startActivityRequest(String activityName) {
+    private void startActivityRequest(Activities activityName) {
         switch (activityName) {
-            case "MainActivity":
+            case Main:
                 Intent mainIntent = new Intent(BaseActivity.this, MainActivity.class);
                 startActivity(mainIntent);
                 break;
         }
     }
 
-    private void startFragmentRequest(String fragmentName) {
+    private void startFragmentRequest(Fragments fragmentName) {
         switch (fragmentName) {
-            case "HomeFragment":
+            case Home:
                 getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new HomeFragment()).commit();
                 break;
-            case "PersonnelFragment":
+            case Personnel:
                 getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new PersonnelFragment()).commit();
                 break;
-            case "TasksFragment":
+            case Tasks:
                 getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new TasksFragment()).commit();
                 break;
-            case "ScheduleFragment":
+            case Schedule:
                 getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new ScheduleFragment()).commit();
                 break;
         }
@@ -106,11 +103,9 @@ public class BaseActivity extends AppCompatActivity {
     private void onDeleteUserConfirmationRequest(Boolean aBoolean) {
         if(aBoolean) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Are you sure?").setPositiveButton("Yes", (dialogInterface, i) -> {
-                baseViewModel.onDeleteAccountConfirmedByUser(true);
-            }).setNegativeButton("No", ((dialogInterface, i) -> {
-                baseViewModel.onDeleteAccountConfirmedByUser(false);
-            }) ).show();
+            builder.setMessage("Are you sure to delete account?").setPositiveButton("Yes", (dialogInterface, i) -> baseViewModel.onDeleteAccountConfirmedByUser(true))
+                    .setNegativeButton("No", ((dialogInterface, i) -> baseViewModel.onDeleteAccountConfirmedByUser(false)))
+                    .show();
         }
     }
 }

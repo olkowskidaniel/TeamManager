@@ -1,7 +1,6 @@
 package com.olkowskidaniel.teammanager.views;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.olkowskidaniel.teammanager.R;
+import com.olkowskidaniel.teammanager.utils.Activities;
 import com.olkowskidaniel.teammanager.viewmodels.MainViewModel;
 import com.olkowskidaniel.teammanager.views.base.BaseActivity;
 
@@ -58,14 +58,14 @@ public class MainActivity extends AppCompatActivity {
         startActivity(baseIntent);
     }
 
-    private void startActivityRequest(String activityName) {
+    private void startActivityRequest(Activities activityName) {
         switch (activityName) {
-            case "LoginActivity":
+            case Login:
                 Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(loginIntent);
                 Log.d(TAG, "Starting LoginActivity");
                 break;
-            case "BaseActivity":
+            case Base:
                 Intent baseIntent = new Intent(MainActivity.this, BaseActivity.class);
                 startActivity(baseIntent);
                 Log.d(TAG, "Starting BaseActivity");

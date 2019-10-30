@@ -14,13 +14,15 @@ import com.olkowskidaniel.teammanager.R;
 import com.olkowskidaniel.teammanager.managers.UserManager;
 import com.olkowskidaniel.teammanager.model.User;
 import com.olkowskidaniel.teammanager.repositories.UserRepository;
+import com.olkowskidaniel.teammanager.utils.Activities;
+import com.olkowskidaniel.teammanager.utils.Fragments;
 
 public class BaseViewModel extends AndroidViewModel {
     private static final String TAG = "BaseViewModel";
     private LiveData<Boolean> isUserLoggedLiveData = Transformations.map(UserManager.getInstance().getIsUserLoggedLiveData(), bool -> bool);
     private LiveData<FirebaseUser> currentFirebaseUserLiveData = Transformations.map(UserManager.getInstance().getCurrentFirebaseUserLiveData(), user -> user);
-    private MutableLiveData<String> startActivityEvent;
-    private MutableLiveData<String> startFragmentEvent;
+    private MutableLiveData<Activities> startActivityEvent;
+    private MutableLiveData<Fragments> startFragmentEvent;
     private MutableLiveData<Boolean> deleteUserConfirmationRequestEvent;
     private User currentUser;
 
@@ -47,16 +49,16 @@ public class BaseViewModel extends AndroidViewModel {
     public void onBottomNavItemClicked(int itemId) {
         switch(itemId) {
             case R.id.baseBottomNav_home:
-                startFragmentEvent.setValue("HomeFragment");
+                startFragmentEvent.setValue(Fragments.Home);
                 break;
             case R.id.baseBottomNav_personnel:
-                startFragmentEvent.setValue("PersonnelFragment");
+                startFragmentEvent.setValue(Fragments.Personnel);
                 break;
             case R.id.baseBottomNav_tasks:
-                startFragmentEvent.setValue("TasksFragment");
+                startFragmentEvent.setValue(Fragments.Tasks);
                 break;
             case R.id.baseBottomNav_schedule:
-                startFragmentEvent.setValue("ScheduleFragment");
+                startFragmentEvent.setValue(Fragments.Schedule);
                 break;
         }
     }
@@ -65,11 +67,11 @@ public class BaseViewModel extends AndroidViewModel {
         return isUserLoggedLiveData;
     }
 
-    public LiveData<String> getStartActivityEvent() {
+    public LiveData<Activities> getStartActivityEvent() {
         return startActivityEvent;
     }
 
-    public LiveData<String> getStartFragmentEvent() {
+    public LiveData<Fragments> getStartFragmentEvent() {
         return startFragmentEvent;
     }
 
@@ -83,7 +85,7 @@ public class BaseViewModel extends AndroidViewModel {
 
     public void isUserLogged(Boolean bool) {
         if(!bool) {
-            startActivityEvent.setValue("MainActivity");
+            startActivityEvent.setValue(Activities.Main);
             Log.d(TAG, "Starting Main Activity");
         }
     }

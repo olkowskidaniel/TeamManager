@@ -1,7 +1,6 @@
 package com.olkowskidaniel.teammanager.views;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
@@ -13,9 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.olkowskidaniel.teammanager.R;
-import com.olkowskidaniel.teammanager.model.User;
+import com.olkowskidaniel.teammanager.utils.Activities;
 import com.olkowskidaniel.teammanager.viewmodels.LoginViewModel;
-import com.olkowskidaniel.teammanager.views.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,13 +73,13 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "Activity destroyed");
     }
 
-    private void startActivityRequest(String activityName) {
+    private void startActivityRequest(Activities activityName) {
         switch (activityName) {
-            case "MainActivity":
+            case Main:
                 Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(mainIntent);
                 break;
-            case "RegisterActivity":
+            case Register:
                 Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(registerIntent);
                 break;

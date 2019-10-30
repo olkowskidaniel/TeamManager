@@ -9,12 +9,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.olkowskidaniel.teammanager.managers.UserManager;
+import com.olkowskidaniel.teammanager.utils.Activities;
 
 
 public class MainViewModel extends AndroidViewModel {
     private static final String TAG = "MainViewModel";
     private LiveData<Boolean> isUserLoggedLiveData = Transformations.map(UserManager.getInstance().getIsUserLoggedLiveData(), bool -> bool);
-    private MutableLiveData<String> startActivityEvent;
+    private MutableLiveData<Activities> startActivityEvent;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
@@ -23,9 +24,9 @@ public class MainViewModel extends AndroidViewModel {
 
     public void onActivityStarted() {
         if(UserManager.getInstance().getIsUserLogged()) {
-            startActivityEvent.setValue("BaseActivity");
+            startActivityEvent.setValue(Activities.Base);
         } else if (!UserManager.getInstance().getIsUserLogged()) {
-            startActivityEvent.setValue("LoginActivity");
+            startActivityEvent.setValue(Activities.Login);
         }
     }
 
@@ -33,16 +34,16 @@ public class MainViewModel extends AndroidViewModel {
         return isUserLoggedLiveData;
     }
 
-    public LiveData<String> getStartActivityEvent() {
+    public LiveData<Activities> getStartActivityEvent() {
         return startActivityEvent;
     }
 
     public void isUserLogged(Boolean bool) {
         if(bool) {
-            startActivityEvent.setValue("BaseActivity");
+            startActivityEvent.setValue(Activities.Base);
         }
         else {
-            startActivityEvent.setValue("LoginActivity");
+            startActivityEvent.setValue(Activities.Login);
         }
     }
 }

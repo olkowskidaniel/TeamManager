@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.olkowskidaniel.teammanager.R;
+import com.olkowskidaniel.teammanager.utils.Activities;
 import com.olkowskidaniel.teammanager.viewmodels.RegisterViewModel;
 
 import butterknife.BindView;
@@ -56,9 +57,9 @@ public class RegisterActivity extends AppCompatActivity {
         registerViewModel.onRegisterSendBtnClicked(registerEmailET.getText().toString().trim(), registerPasswordET.getText().toString().trim(), registerRePasswordET.getText().toString().trim());
     }
 
-    private void startActivityRequest(String activityName) {
+    private void startActivityRequest(Activities activityName) {
         switch (activityName) {
-            case "MainActivity":
+            case Main:
                 Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
                 startActivity(mainIntent);
                 break;
