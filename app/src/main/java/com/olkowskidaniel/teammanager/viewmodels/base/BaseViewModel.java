@@ -20,11 +20,13 @@ public class BaseViewModel extends AndroidViewModel {
     private LiveData<Boolean> isUserLoggedLiveData = Transformations.map(UserManager.getInstance().getIsUserLoggedLiveData(), bool -> bool);
     private LiveData<FirebaseUser> currentFirebaseUserLiveData = Transformations.map(UserManager.getInstance().getCurrentFirebaseUserLiveData(), user -> user);
     private MutableLiveData<String> startActivityEvent;
+    private MutableLiveData<String> startFragmentEvent;
     private User currentUser;
 
     public BaseViewModel(@NonNull Application application) {
         super(application);
         startActivityEvent = new MutableLiveData<>();
+        startFragmentEvent = new MutableLiveData<>();
     }
 
     public void onOptionsButtonClicked(int itemId) {
@@ -34,9 +36,8 @@ public class BaseViewModel extends AndroidViewModel {
                 Log.d(TAG, "onLogoutButtonClicked");
                 break;
             case R.id.baseOptionsMenu_deleteAccount:
-                UserManager.getInstance().deleteAccount();
-                UserManager.getInstance().logout();
                 UserRepository.getInstance().deleteUserFromDatabase(currentUser.getEmail());
+                UserManager.getInstance().deleteAccount();
                 break;
         }
     }
@@ -44,12 +45,16 @@ public class BaseViewModel extends AndroidViewModel {
     public void onBottomNavItemClicked(int itemId) {
         switch(itemId) {
             case R.id.baseBottomNav_home:
+                startFragmentEvent.setValue("HomeFragment");
                 break;
             case R.id.baseBottomNav_personnel:
+                startFragmentEvent.setValue("PersonnelFragment");
                 break;
             case R.id.baseBottomNav_tasks:
+                startFragmentEvent.setValue("TasksFragment");
                 break;
             case R.id.baseBottomNav_schedule:
+                startFragmentEvent.setValue("ScheduleFragment");
                 break;
         }
     }
@@ -60,6 +65,10 @@ public class BaseViewModel extends AndroidViewModel {
 
     public MutableLiveData<String> getStartActivityEvent() {
         return startActivityEvent;
+    }
+
+    public MutableLiveData<String> getStartFragmentEvent() {
+        return startFragmentEvent;
     }
 
     public LiveData<FirebaseUser> getCurrentFirebaseUserLiveData() {

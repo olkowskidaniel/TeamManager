@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.olkowskidaniel.teammanager.R;
 import com.olkowskidaniel.teammanager.model.User;
@@ -54,7 +55,13 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnClick(R.id.loginSendBtn)
     void loginSendBtnClicked() {
-        loginViewModel.onLoginSendButtonClicked(loginEmailET.getText().toString().trim(), loginPasswordET.getText().toString().trim());
+        String email = loginEmailET.getText().toString().trim();
+        String password = loginPasswordET.getText().toString().trim();
+        if(email.trim().length() == 0 || password.trim().length() == 0) {
+            Toast.makeText(this, "Please, fill all the fields", Toast.LENGTH_SHORT).show();
+        } else {
+            loginViewModel.onLoginSendButtonClicked(email, password);
+        }
     }
 
     @OnClick(R.id.loginRegisterBtn)

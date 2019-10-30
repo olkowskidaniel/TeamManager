@@ -81,13 +81,14 @@ public class UserManager {
     public void deleteAccount() {
         currentFirebaseUser.delete().addOnCompleteListener(task -> {
             Log.d(TAG, "Account " + currentFirebaseUser.getEmail() + " deleted");
+            isUserLoggedLiveData.setValue(false);
         });
     }
 
     public void logout() {
         firebaseAuth.signOut();
         currentFirebaseUser = null;
-        getIsUserLoggedLiveData().setValue(false);
+        isUserLoggedLiveData.setValue(false);
         isUserLogged = false;
         Log.d(TAG, "Logged out");
     }

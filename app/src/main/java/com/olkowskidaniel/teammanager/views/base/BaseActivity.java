@@ -43,7 +43,11 @@ public class BaseActivity extends AppCompatActivity {
 
         baseViewModel.getCurrentFirebaseUserLiveData().observe(this, user -> baseViewModel.setCurrentUser(user));
 
+        baseViewModel.getStartFragmentEvent().observe(this, fragmentName -> startFragmentRequest(fragmentName));
+
     }
+
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener baseBottomNavItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -76,6 +80,23 @@ public class BaseActivity extends AppCompatActivity {
             case "MainActivity":
                 Intent mainIntent = new Intent(BaseActivity.this, MainActivity.class);
                 startActivity(mainIntent);
+                break;
+        }
+    }
+
+    private void startFragmentRequest(String fragmentName) {
+        switch (fragmentName) {
+            case "HomeFragment":
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new HomeFragment()).commit();
+                break;
+            case "PersonnelFragment":
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new PersonnelFragment()).commit();
+                break;
+            case "TasksFragment":
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new TasksFragment()).commit();
+                break;
+            case "ScheduleFragment":
+                getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new ScheduleFragment()).commit();
                 break;
         }
     }

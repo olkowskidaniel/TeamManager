@@ -2,7 +2,6 @@ package com.olkowskidaniel.teammanager.remotedata;
 
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
