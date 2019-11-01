@@ -2,12 +2,9 @@ package com.olkowskidaniel.teammanager.managers;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -20,7 +17,7 @@ public class UserManager {
     private MutableLiveData<FirebaseUser> currentFirebaseUserLiveData;
     private MutableLiveData<Boolean> isUserLoggedLiveData;
     private MutableLiveData<String> loginFailureMessageLiveData;
-    private MutableLiveData<String> registerFailuerMessageLiveData;
+    private MutableLiveData<String> registerFailureMessageLiveData;
     private MutableLiveData<Boolean> userRegisteredEventLiveData;
     private Boolean isUserLogged;
 
@@ -40,8 +37,9 @@ public class UserManager {
         isUserLoggedLiveData = new MutableLiveData<>();
         currentFirebaseUserLiveData = new MutableLiveData<>();
         loginFailureMessageLiveData = new MutableLiveData<>();
-        registerFailuerMessageLiveData = new MutableLiveData<>();
+        registerFailureMessageLiveData = new MutableLiveData<>();
         userRegisteredEventLiveData = new MutableLiveData<>();
+
         if(currentFirebaseUser == null) {
             getIsUserLoggedLiveData().setValue(false);
             isUserLogged = false;
@@ -74,7 +72,7 @@ public class UserManager {
                 Log.d(TAG, "User " + email + " created");
                 userRegisteredEventLiveData.setValue(true);
             } else {
-                registerFailuerMessageLiveData.setValue(task.getException().getMessage());
+                registerFailureMessageLiveData.setValue(task.getException().getMessage());
             }
         });
     }
@@ -105,8 +103,8 @@ public class UserManager {
         return loginFailureMessageLiveData;
     }
 
-    public MutableLiveData<String> getRegisterFailuerMessageLiveData() {
-        return registerFailuerMessageLiveData;
+    public MutableLiveData<String> getRegisterFailureMessageLiveData() {
+        return registerFailureMessageLiveData;
     }
 
     public MutableLiveData<Boolean> getUserRegisteredEventLiveData() {
@@ -119,7 +117,7 @@ public class UserManager {
 
     public void resetFailureMessages() {
         loginFailureMessageLiveData.setValue("");
-        registerFailuerMessageLiveData.setValue("");
+        registerFailureMessageLiveData.setValue("");
     }
 
     public void resetEvents() {
@@ -127,7 +125,7 @@ public class UserManager {
     }
 
     public void requestPasswordMismatchMessage() {
-        registerFailuerMessageLiveData.setValue("Passwords don't match");
+        registerFailureMessageLiveData.setValue("Passwords don't match");
     }
 
     public FirebaseUser getCurrentFirebaseUser() {

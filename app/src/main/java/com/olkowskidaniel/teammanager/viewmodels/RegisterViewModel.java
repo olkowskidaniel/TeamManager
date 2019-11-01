@@ -15,7 +15,7 @@ import com.olkowskidaniel.teammanager.utils.Activities;
 
 public class RegisterViewModel extends AndroidViewModel {
 
-    private LiveData<String> registerFailureMessageLiveData = Transformations.map(UserManager.getInstance().getRegisterFailuerMessageLiveData(), message -> message);
+    private LiveData<String> registerFailureMessageLiveData = Transformations.map(UserManager.getInstance().getRegisterFailureMessageLiveData(), message -> message);
     private LiveData<Boolean> userRegisteredEventLiveData = Transformations.map(UserManager.getInstance().getUserRegisteredEventLiveData(), bool -> bool);
     private MutableLiveData<Activities> startActivityEvent;
     private User registeringUser;

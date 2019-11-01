@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.olkowskidaniel.teammanager.R;
 import com.olkowskidaniel.teammanager.managers.UserManager;
 import com.olkowskidaniel.teammanager.model.User;
+import com.olkowskidaniel.teammanager.repositories.EmployeesRepository;
 import com.olkowskidaniel.teammanager.repositories.UserRepository;
 import com.olkowskidaniel.teammanager.utils.Activities;
 import com.olkowskidaniel.teammanager.utils.Fragments;
@@ -92,6 +93,8 @@ public class BaseViewModel extends AndroidViewModel {
 
     public void setCurrentUser(FirebaseUser user) {
         currentUser = new User(user.getEmail());
+        UserRepository.getInstance().setCurrentUser(currentUser);
+        EmployeesRepository.getInstance().setCurrentUser(currentUser);
         Log.d(TAG, "Current user set to: " + currentUser.getEmail());
     }
 

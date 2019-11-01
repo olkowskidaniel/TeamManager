@@ -75,11 +75,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void startActivityRequest(Activities activityName) {
-        switch (activityName) {
-            case Main:
+        if(activityName == Activities.Main) {
                 Intent mainIntent = new Intent(BaseActivity.this, MainActivity.class);
                 startActivity(mainIntent);
-                break;
         }
     }
 

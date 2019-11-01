@@ -29,10 +29,6 @@ public class LoginActivity extends AppCompatActivity {
     EditText loginEmailET;
     @BindView(R.id.loginPasswordET)
     EditText loginPasswordET;
-    @BindView(R.id.loginSendBtn)
-    Button loginSendBtn;
-    @BindView(R.id.loginRegisterBtn)
-    Button loginRegisterButton;
     @BindView(R.id.loginFailureMessageTV)
     TextView loginFailureMessageTV;
 

@@ -3,6 +3,7 @@ package com.olkowskidaniel.teammanager.repositories;
 
 import android.util.Log;
 
+import com.olkowskidaniel.teammanager.model.User;
 import com.olkowskidaniel.teammanager.remotedata.Firestore;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ public class UserRepository {
 
     private static UserRepository instance = null;
     private static final String TAG = "UserRepository";
+    private User currentUser;
 
     private Firestore firestore;
 
@@ -26,6 +28,7 @@ public class UserRepository {
 
     private UserRepository() {
         firestore = new Firestore();
+        currentUser = new User();
     }
 
 
@@ -40,5 +43,10 @@ public class UserRepository {
         userMap.put("email", email);
         firestore.deleteUserFromCollection(userMap);
         Log.d(TAG, "Deleting collection: " + email);
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+        Log.d(TAG, "current user set to: " + currentUser.getEmail());
     }
 }

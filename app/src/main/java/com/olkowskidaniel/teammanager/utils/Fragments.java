@@ -4,5 +4,6 @@ public enum Fragments {
     Home,
     Personnel,
     Tasks,
-    Schedule
+    Schedule,
+    AddNewEmpl
 }
