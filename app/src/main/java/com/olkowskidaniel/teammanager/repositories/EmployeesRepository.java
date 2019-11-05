@@ -5,14 +5,11 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.olkowskidaniel.teammanager.model.Employee;
 import com.olkowskidaniel.teammanager.model.User;
 import com.olkowskidaniel.teammanager.remotedata.Firestore;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class EmployeesRepository {
 
@@ -21,7 +18,6 @@ public class EmployeesRepository {
     private LiveData<List<Employee>> employeesListLiveData;
     private Firestore firestore;
     private User currentUser;
-
 
     public static EmployeesRepository getInstance() {
         if (instance == null) {
@@ -41,10 +37,7 @@ public class EmployeesRepository {
     }
 
     public void addEmplToDatabase(Employee employee) {
-        Map<String, Object> emplMap = new HashMap<>();
-        emplMap.put("name", employee.getName());
-        emplMap.put("lastName", employee.getLastName());
-        firestore.addEmployeeToUsersEmployeesCollection(currentUser.getEmail(), emplMap);
+        firestore.addEmployeeToUsersEmployeesCollection(currentUser.getEmail(), employee);
     }
 
     public LiveData<List<Employee>> getEmployeesListLiveData() {
@@ -53,5 +46,9 @@ public class EmployeesRepository {
 
     public void getAllEmployees() {
         firestore.getAllEmployees(currentUser.getEmail());
+    }
+
+    public void deleteEmployeeFromDatabase(String currentEmpId) {
+        firestore.deleteEmplFromDatabase(currentUser.getEmail(), currentEmpId);
     }
 }

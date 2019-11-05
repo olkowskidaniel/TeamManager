@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.olkowskidaniel.teammanager.R;
+import com.olkowskidaniel.teammanager.utils.Fragments;
 import com.olkowskidaniel.teammanager.viewmodels.base.AddNewEmplViewModel;
 
 import butterknife.BindView;
@@ -47,6 +48,8 @@ public class AddNewEmplFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         addNewEmplViewModel = ViewModelProviders.of(this).get(AddNewEmplViewModel.class);
+
+        addNewEmplViewModel.getStartFragmentEvent().observe(this, this:: onStartFragmentRequest);
     }
 
     @OnClick(R.id.addNewEmplAddBtn)
@@ -56,8 +59,15 @@ public class AddNewEmplFragment extends Fragment {
             String lastName = addNewEmplLastNameET.getText().toString().trim();
 
             addNewEmplViewModel.onAddNewEmplBtnClicked(name, lastName);
+
         } else {
             Toast.makeText(getActivity(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void onStartFragmentRequest(Fragments fragmentName) {
+        if(fragmentName == Fragments.Personnel) {
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new PersonnelFragment()).commit();
         }
     }
 

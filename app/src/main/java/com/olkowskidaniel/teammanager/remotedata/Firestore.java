@@ -5,8 +5,12 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.olkowskidaniel.teammanager.model.Employee;
 
 import java.util.ArrayList;
@@ -37,32 +41,55 @@ public class Firestore {
                 .addOnFailureListener(aVoid -> Log.d(TAG, aVoid.getMessage()));
     }
 
-    public void addEmployeeToUsersEmployeesCollection(String currentUserEmail, Map<String, Object> emplMap) {
-        firebaseFirestore.collection("users")
-                .document(currentUserEmail)
-                .collection("employees")
-                .document(emplMap.get("name").toString() + emplMap.get("lastName")).set(emplMap)
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "Document " + emplMap.get("name") + emplMap.get("lastName") + " added"))
+    public void addEmployeeToUsersEmployeesCollection(String currentUserEmail, Employee employee) {
+        CollectionReference collectionReference = firebaseFirestore.collection("users")
+                .document(currentUserEmail).collection("employees");
+
+        collectionReference.document().set(employee)
+                .addOnSuccessListener(aVoid -> {
+                   collectionReference.get().addOnCompleteListener(task -> {
+                       QuerySnapshot querySnapshot = task.getResult();
+                       for(DocumentSnapshot documentSnapshot : querySnapshot) {
+                           if(documentSnapshot.equals(employee)) {
+                               documentSnapshot.getDocumentReference("emplId").update("emplId", documentSnapshot.getId());
+                           }
+                       }
+                   });
+                    Log.d(TAG, "Document " + employee.getEmplId() + " added");
+                })
                 .addOnFailureListener(aVoid -> Log.d(TAG, aVoid.getMessage()));
     }
 
     public void getAllEmployees(String currentUserEmail) {
-        firebaseFirestore.collection("users")
+        List<Employee> employeeList = new ArrayList<>();
+
+        CollectionReference employeesCollectionReference = firebaseFirestore.collection("users")
                 .document(currentUserEmail)
-                .collection("employees").get()
+                .collection("employees");
+
+        employeesCollectionReference.orderBy("lastName").get()
                 .addOnCompleteListener(task -> {
-                    List<Employee> employeeList = new ArrayList<>();
                     employeesListLiveData.setValue(employeeList);
                     for(QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                         Employee employee = documentSnapshot.toObject(Employee.class);
+                        employee.setEmplId(documentSnapshot.getId());
                         employeeList.add(employee);
                         employeesListLiveData.setValue(employeeList);
-                        Log.d(TAG, "Employee: " + employee.getName());
+                        Log.d(TAG, "Employee: " + employee.getName() + " " + employee.getLastName() + " Id: " + employee.getEmplId());
                     }
                 });
     }
 
     public LiveData<List<Employee>> getEmployeeListLiveData() {
         return employeesListLiveData;
+    }
+
+    public void deleteEmplFromDatabase(String currentUserEmail, String currentEmpId) {
+        firebaseFirestore.collection("users")
+                .document(currentUserEmail)
+                .collection("employees")
+                .document(currentEmpId).delete()
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Employee " + currentEmpId + " deleted"))
+                .addOnFailureListener(aVoid -> Log.d(TAG, aVoid.getMessage()));
     }
 }

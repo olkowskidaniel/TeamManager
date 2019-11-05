@@ -1,19 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/empListItemNameTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name"
-        android:textSize="20sp"
-        android:layout_margin="10dp"/>
-    <TextView
-        android:id="@+id/empListItemLastNameTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LastName"
-        android:textSize="20sp"
-        android:layout_margin="10dp"/>
-</LinearLayout>
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/empListItemNumberTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="No."
+                android:textSize="12sp"/>
+            <TextView
+                android:id="@+id/empListItemNameTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_toEndOf="@id/empListItemNumberTV"
+                android:text="LastName"
+                android:textSize="12sp"/>
+            <Button
+                android:id="@+id/empListItemEditBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/ic_edit"
+                android:layout_toStartOf="@id/empListItemDeleteBtn"
+                android:layout_margin="10dp"/>
+            <Button
+                android:id="@+id/empListItemDeleteBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/ic_delete"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="10dp"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
