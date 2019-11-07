@@ -24,13 +24,7 @@
                 android:layout_toEndOf="@id/empListItemNumberTV"
                 android:text="LastName"
                 android:textSize="12sp"/>
-            <Button
-                android:id="@+id/empListItemEditBtn"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/ic_edit"
-                android:layout_toStartOf="@id/empListItemDeleteBtn"
-                android:layout_margin="10dp"/>
+
             <Button
                 android:id="@+id/empListItemDeleteBtn"
                 android:layout_width="20dp"
@@ -38,7 +32,6 @@
                 android:background="@drawable/ic_delete"
                 android:layout_alignParentEnd="true"
                 android:layout_margin="10dp"/>
-
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

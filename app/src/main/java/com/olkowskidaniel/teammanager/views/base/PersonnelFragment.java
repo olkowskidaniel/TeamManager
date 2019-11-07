@@ -1,6 +1,7 @@
 package com.olkowskidaniel.teammanager.views.base;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
@@ -20,7 +21,6 @@ import android.widget.Button;
 
 import com.olkowskidaniel.teammanager.R;
 import com.olkowskidaniel.teammanager.model.Employee;
-import com.olkowskidaniel.teammanager.utils.ClickListener;
 import com.olkowskidaniel.teammanager.utils.Fragments;
 import com.olkowskidaniel.teammanager.viewmodels.base.PersonnelViewModel;
 
@@ -59,16 +59,16 @@ public class PersonnelFragment extends Fragment {
         personnelEmployeeListRV.setHasFixedSize(true);
         personnelEmployeeListRVLayoutManager = new LinearLayoutManager(this.getActivity());
         personnelEmployeeListRV.setLayoutManager(personnelEmployeeListRVLayoutManager);
-        employeeListRecyclerViewAdapter = new EmployeeListRecyclerViewAdapter(new ClickListener() {
+        employeeListRecyclerViewAdapter = new EmployeeListRecyclerViewAdapter(new EmployeesListClickListener() {
             @Override
             public void onDeleteButtonClicked(String emplId) {
                 Log.d(TAG, "emplId: " + emplId);
                 personnelViewModel.onDeleteEmployeeBtnClicked(emplId);
             }
-
             @Override
-            public void onEditButtonClicked(String emplId) {
-                //TODO: handle employee edit
+            public void onListItemClicked(Employee employee) {
+                personnelViewModel.onEmployeesListItemClicked(employee);
+                Log.d(TAG, "Item clicked with employee: " + employee.getName());
             }
         });
                 personnelEmployeeListRV.setAdapter(employeeListRecyclerViewAdapter);
@@ -76,6 +76,12 @@ public class PersonnelFragment extends Fragment {
         personnelEmployeeListRV.addItemDecoration(
                 new DividerItemDecoration(getActivity(),
                 DividerItemDecoration.VERTICAL));
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         personnelViewModel = ViewModelProviders.of(this).get(PersonnelViewModel.class);
 
@@ -83,17 +89,15 @@ public class PersonnelFragment extends Fragment {
 
         personnelViewModel.getEmployeesListLiveData().observe(this, this::onEmployeesListUpdate);
 
-        personnelViewModel.getDeleteUserConfirmationRequestEvent().observe(this, this::onDeleteUserConfirmationRequest);
+        personnelViewModel.getDeleteUserConfirmationRequestEvent().observe(this, this::onDeleteEmployeeConfirmationRequest);
+
+        personnelViewModel.getEmployeeListChangedEvent().observe(this, this::employeeListChangedEventTriggered);
+
+        personnelViewModel.getStartFragmentPassingEmployeeEvent().observe(this, this::onStartFragmentPassingEmployeeRequest);
 
         personnelViewModel.onFragmentStarted();
-
-        return view;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
     @OnClick(R.id.personnelAddEmployeeBtn)
     void personnelAddEmployeeBtnClicked() {
@@ -102,7 +106,24 @@ public class PersonnelFragment extends Fragment {
 
 
     private void onStartFragmentRequest(Fragments fragmentName) {
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new AddNewEmplFragment()).commit();
+        switch(fragmentName) {
+            case AddNewEmpl:
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.base_fragment_container, new AddNewEmplFragment()).commit();
+                break;
+        }
+    }
+
+    private void onStartFragmentPassingEmployeeRequest(Employee employee) {
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        SingleEmployeeDetailsFragment singleEmployeeDetailsFragment = new SingleEmployeeDetailsFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("employee", employee);
+        singleEmployeeDetailsFragment.setArguments(bundle);
+        fragmentTransaction.replace(R.id.base_fragment_container, singleEmployeeDetailsFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     private void onEmployeesListUpdate(List<Employee> employeesList) {
@@ -111,13 +132,19 @@ public class PersonnelFragment extends Fragment {
     }
 
 
-    private void onDeleteUserConfirmationRequest(Boolean aBoolean) {
+    private void onDeleteEmployeeConfirmationRequest(Boolean aBoolean) {
         if(aBoolean) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setMessage("Are you sure to delete employee?").setPositiveButton("Yes", (dialogInterface, i) -> personnelViewModel.onDeleteAccountConfirmedByUser(true))
-                    .setNegativeButton("No", ((dialogInterface, i) -> personnelViewModel.onDeleteAccountConfirmedByUser(false)))
+            builder.setMessage("Are you sure to delete employee?")
+                    .setPositiveButton("Yes", (dialogInterface, i) -> personnelViewModel.onDeleteEmployeeConfirmedByUser(true))
+                    .setNegativeButton("No", ((dialogInterface, i) -> personnelViewModel.onDeleteEmployeeConfirmedByUser(false)))
                     .show();
         }
     }
 
+    private void employeeListChangedEventTriggered(Boolean aBoolean) {
+        if(aBoolean) {
+            personnelViewModel.onEmployeeListChangedEventTriggered();
+        }
+    }
 }

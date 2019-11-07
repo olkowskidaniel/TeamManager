@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.olkowskidaniel.teammanager.R;
 import com.olkowskidaniel.teammanager.model.Employee;
-import com.olkowskidaniel.teammanager.utils.ClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +19,9 @@ public class EmployeeListRecyclerViewAdapter extends RecyclerView.Adapter<Employ
 
     private List<Employee> employeeList = new ArrayList<>();
 
-    private final ClickListener clickListener;
+    private final EmployeesListClickListener clickListener;
 
-    public EmployeeListRecyclerViewAdapter(ClickListener clickListener) {
+    public EmployeeListRecyclerViewAdapter(EmployeesListClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
@@ -47,13 +46,11 @@ public class EmployeeListRecyclerViewAdapter extends RecyclerView.Adapter<Employ
         TextView emplNumberTV;
         TextView emplNameTV;
         Button emplDeleteBtn;
-        Button emplEditBtn;
         public EmployeeListViewholder(@NonNull View itemView) {
             super(itemView);
             emplNumberTV = itemView.findViewById(R.id.empListItemNumberTV);
             emplNameTV = itemView.findViewById(R.id.empListItemNameTV);
             emplDeleteBtn = itemView.findViewById(R.id.empListItemDeleteBtn);
-            emplEditBtn = itemView.findViewById(R.id.empListItemEditBtn);
         }
 
         public void bind(int position, Employee employee) {
@@ -62,8 +59,7 @@ public class EmployeeListRecyclerViewAdapter extends RecyclerView.Adapter<Employ
             emplNumberTV.setText(emplNumber);
             emplNameTV.setText(name);
             emplDeleteBtn.setOnClickListener(view -> clickListener.onDeleteButtonClicked(employee.getEmplId()));
-
-            emplEditBtn.setOnClickListener(view -> clickListener.onEditButtonClicked(employee.getEmplId()));
+            itemView.setOnClickListener(view -> clickListener.onListItemClicked(employee));
         }
     }
 

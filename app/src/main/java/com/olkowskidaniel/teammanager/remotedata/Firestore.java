@@ -6,12 +6,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.olkowskidaniel.teammanager.model.Employee;
+import com.olkowskidaniel.teammanager.model.NewEmployee;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +20,14 @@ public class Firestore {
     private static final String TAG = "Firestore";
     private FirebaseFirestore firebaseFirestore;
     private MutableLiveData<List<Employee>> employeesListLiveData;
-
-
+    private MutableLiveData<Boolean> employeeListChangedEvent;
+    private MutableLiveData<String> employeeNameUpdatedEvent;
 
     public Firestore() {
         firebaseFirestore = FirebaseFirestore.getInstance();
         employeesListLiveData = new MutableLiveData<>();
+        employeeListChangedEvent = new MutableLiveData<>();
+        employeeNameUpdatedEvent = new MutableLiveData<>();
     }
 
     public void addToUsersCollection(Map<String, Object> userMap) {
@@ -41,21 +41,14 @@ public class Firestore {
                 .addOnFailureListener(aVoid -> Log.d(TAG, aVoid.getMessage()));
     }
 
-    public void addEmployeeToUsersEmployeesCollection(String currentUserEmail, Employee employee) {
+    public void addEmployeeToUsersEmployeesCollection(String currentUserEmail, NewEmployee newEmployee) {
         CollectionReference collectionReference = firebaseFirestore.collection("users")
                 .document(currentUserEmail).collection("employees");
 
-        collectionReference.document().set(employee)
+        collectionReference.document().set(newEmployee)
                 .addOnSuccessListener(aVoid -> {
-                   collectionReference.get().addOnCompleteListener(task -> {
-                       QuerySnapshot querySnapshot = task.getResult();
-                       for(DocumentSnapshot documentSnapshot : querySnapshot) {
-                           if(documentSnapshot.equals(employee)) {
-                               documentSnapshot.getDocumentReference("emplId").update("emplId", documentSnapshot.getId());
-                           }
-                       }
-                   });
-                    Log.d(TAG, "Document " + employee.getEmplId() + " added");
+                    Log.d(TAG, "Document " + newEmployee.getName() + " added");
+                    employeeListChangedEvent.setValue(true);
                 })
                 .addOnFailureListener(aVoid -> Log.d(TAG, aVoid.getMessage()));
     }
@@ -84,12 +77,34 @@ public class Firestore {
         return employeesListLiveData;
     }
 
+    public LiveData<Boolean> getEmployeeListChangedEvent() {
+        return employeeListChangedEvent;
+    }
+
+    public LiveData<String> getEmployeeNameUpdatedEvent() {
+        return employeeNameUpdatedEvent;
+    }
+
     public void deleteEmplFromDatabase(String currentUserEmail, String currentEmpId) {
         firebaseFirestore.collection("users")
                 .document(currentUserEmail)
                 .collection("employees")
                 .document(currentEmpId).delete()
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "Employee " + currentEmpId + " deleted"))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Employee " + currentEmpId + " deleted");
+                    employeeListChangedEvent.setValue(true);
+                })
                 .addOnFailureListener(aVoid -> Log.d(TAG, aVoid.getMessage()));
+    }
+
+    public void updateEmployeeName(String currentUserEmail, String emplId, String name) {
+        firebaseFirestore.collection("users")
+                .document(currentUserEmail)
+                .collection("employees")
+                .document(emplId)
+                .update("name", name).addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Employee " + currentUserEmail + " name updated to " + name);
+                    employeeNameUpdatedEvent.setValue(name);
+                });
     }
 }

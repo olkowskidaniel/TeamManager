@@ -20,8 +20,7 @@ public class AddNewEmplViewModel extends AndroidViewModel {
     }
 
     public void onAddNewEmplBtnClicked(String name, String lastName) {
-        Employee employee = new Employee(name, lastName);
-        EmployeesRepository.getInstance().addEmplToDatabase(employee);
+        EmployeesRepository.getInstance().addEmplToDatabase(name, lastName);
         startFragmentEvent.setValue(Fragments.Personnel);
     }
 

@@ -23,4 +23,12 @@
     <string name="addNewEmplNameET_hint">Name</string>
     <string name="addNewEmplLastNameET_hint">Last name</string>
     <string name="addNewEmplAddBtn_text">ADD</string>
+    <string name="editEmployeeTitleTV_text">Editing employee:</string>
+    <string name="editEmployeeNameTV_text">Sample Name</string>
+    <string name="editEmployeeNameET_hint">Name</string>
+    <string name="editEmployeeLastNameET_hint">Last name</string>
+    <string name="editEmployeeAddBtn_text">Save</string>
+    <string name="singleEmployeeDetailsTitleNameTV_text">SAMPLE NAME</string>
+    <string name="singleEmployeeDetailsNameTV_text">Name</string>
+    <string name="singleEmployeeDetailsLastNameTV_text">Lastname</string>
 </resources>
