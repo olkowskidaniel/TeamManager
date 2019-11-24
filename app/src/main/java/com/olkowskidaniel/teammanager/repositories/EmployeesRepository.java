@@ -20,6 +20,7 @@ public class EmployeesRepository {
     private LiveData<List<Employee>> employeesListLiveData;
     private LiveData<Boolean> employeeListChangedEvent;
     private LiveData<String> employeeNameUpdatedEvent;
+    private LiveData<String> employeeLastnameUpdatedEvent;
     private Firestore firestore;
     private User currentUser;
 
@@ -35,6 +36,7 @@ public class EmployeesRepository {
         employeesListLiveData = Transformations.map(firestore.getEmployeeListLiveData(), list -> list);
         employeeListChangedEvent = Transformations.map(firestore.getEmployeeListChangedEvent(), bool -> bool);
         employeeNameUpdatedEvent = Transformations.map(firestore.getEmployeeNameUpdatedEvent(), name -> name);
+        employeeLastnameUpdatedEvent = Transformations.map(firestore.getEmployeeLastNameUpdatedEvent(), lastName -> lastName);
     }
 
     public void setCurrentUser(User currentUser) {
@@ -59,6 +61,10 @@ public class EmployeesRepository {
         return employeeNameUpdatedEvent;
     }
 
+    public LiveData<String> getEmployeeLastnameUpdatedEvent() {
+        return employeeLastnameUpdatedEvent;
+    }
+
     public void getAllEmployees() {
         firestore.getAllEmployees(currentUser.getEmail());
     }
@@ -69,5 +75,9 @@ public class EmployeesRepository {
 
     public void updateEmployeeName(String emplId, String name) {
         firestore.updateEmployeeName(currentUser.getEmail(), emplId, name);
+    }
+
+    public void updateEmployeeLastName(String emplId, String lastName) {
+        firestore.updateEmployeeLastName(currentUser.getEmail(), emplId, lastName);
     }
 }

@@ -32,21 +32,21 @@ public class SingleEmployeeDetailsFragment extends Fragment {
     @BindView(R.id.singleEmployeeDetailsTitleNameTV)
     TextView titleTV;
     @BindView(R.id.singleEmployeeDetailsNameTV)
-    TextView employeeNameTV;
+    TextView nameTV;
     @BindView(R.id.singleEmployeeDetailsNameEditBtn)
     Button nameEditBtn;
     @BindView(R.id.singleEmployeeDetailsNameET)
-    TextView employeeNameET;
+    TextView nameET;
     @BindView(R.id.singleEmployeeDetailsNameSaveBtn)
     Button nameSaveBtn;
     @BindView(R.id.singleEmployeeDetailsNameCancelBtn)
     Button nameCancelBtn;
     @BindView(R.id.singleEmployeeDetailsLastNameTV)
-    TextView employeeLastNameTV;
+    TextView lastNameTV;
     @BindView(R.id.singleEmployeeDetailsLastNameEditBtn)
     Button lastNameEditBtn;
     @BindView(R.id.singleEmployeeDetailsLastNameET)
-    TextView employeeLastNameET;
+    TextView lastNameET;
     @BindView(R.id.singleEmployeeDetailsLastNameSaveBtn)
     Button lastNameSaveBtn;
     @BindView(R.id.singleEmployeeDetailsLastNameCancelBtn)
@@ -72,72 +72,77 @@ public class SingleEmployeeDetailsFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         singleEmployeeDetailsViewModel = ViewModelProviders.of(this).get(SingleEmployeeDetailsViewModel.class);
         Bundle bundle = getArguments();
-        singleEmployeeDetailsViewModel.onFragmentCreated(bundle.getSerializable("employee"));
         clickedEmployee = (Employee) bundle.getSerializable("employee");
+        singleEmployeeDetailsViewModel.onFragmentCreated(bundle.getSerializable("employee"));
         singleEmployeeDetailsViewModel.getFragmentTitleLiveData().observe(this, title -> titleTV.setText(title));
-        singleEmployeeDetailsViewModel.getEmployeeNameLiveData().observe(this, name -> employeeNameTV.setText(name));
-        singleEmployeeDetailsViewModel.getEmployeeLastNameLiveData().observe(this, lastName -> employeeLastNameTV.setText(lastName));
-
         singleEmployeeDetailsViewModel.getEmployeeNameUpdatedEvent().observe(this, this::onEmployeeNameUpdated);
+        singleEmployeeDetailsViewModel.getEmployeeLastNameUpdatedEvent().observe(this, this::onEmployeeLastNameUpdated);
+
+        singleEmployeeDetailsViewModel.getEmployeeNameLiveData().observe(this, name -> nameTV.setText(name));
+        singleEmployeeDetailsViewModel.getEmployeeLastNameLiveData().observe(this, lastName -> lastNameTV.setText(lastName));
     }
 
-    @OnClick(R.id.singleEmployeeDetailsNameEditBtn)
-    void onNameEditBtnClicked() {
-        employeeNameTV.setVisibility(View.GONE);
-        nameEditBtn.setVisibility(View.GONE);
 
-        employeeNameET.setVisibility(View.VISIBLE);
-        employeeNameET.setText(clickedEmployee.getName());
-        nameSaveBtn.setVisibility(View.VISIBLE);
-        nameCancelBtn.setVisibility(View.VISIBLE);
+    @OnClick({R.id.singleEmployeeDetailsNameEditBtn, R.id.singleEmployeeDetailsNameSaveBtn, R.id.singleEmployeeDetailsNameCancelBtn,
+    R.id.singleEmployeeDetailsLastNameEditBtn, R.id.singleEmployeeDetailsLastNameSaveBtn, R.id.singleEmployeeDetailsLastNameCancelBtn})
+    void buttonClicked(Button button){
+        switch (button.getId()) {
+            case R.id.singleEmployeeDetailsNameEditBtn:
+                nameTV.setVisibility(View.GONE);
+                nameEditBtn.setVisibility(View.GONE);
+                nameET.setVisibility(View.VISIBLE);
+                nameSaveBtn.setVisibility(View.VISIBLE);
+                nameCancelBtn.setVisibility(View.VISIBLE);
+                nameET.setText(clickedEmployee.getName());
+                break;
+            case R.id.singleEmployeeDetailsNameSaveBtn:
+                singleEmployeeDetailsViewModel.onNameSaveButtonClicked(clickedEmployee.getEmplId(), nameET.getText().toString());
+                break;
+            case R.id.singleEmployeeDetailsNameCancelBtn:
+                nameTV.setVisibility(View.VISIBLE);
+                nameEditBtn.setVisibility(View.VISIBLE);
+                nameET.setVisibility(View.GONE);
+                nameSaveBtn.setVisibility(View.GONE);
+                nameCancelBtn.setVisibility(View.GONE);
+                break;
+            case R.id.singleEmployeeDetailsLastNameEditBtn:
+                lastNameTV.setVisibility(View.GONE);
+                lastNameEditBtn.setVisibility(View.GONE);
+                lastNameET.setVisibility(View.VISIBLE);
+                lastNameSaveBtn.setVisibility(View.VISIBLE);
+                lastNameCancelBtn.setVisibility(View.VISIBLE);
+                lastNameET.setText(clickedEmployee.getLastName());
+                break;
+            case R.id.singleEmployeeDetailsLastNameSaveBtn:
+                singleEmployeeDetailsViewModel.onLastNameSaveButtonClicked(clickedEmployee.getEmplId(), lastNameET.getText().toString());
+                break;
+            case R.id.singleEmployeeDetailsLastNameCancelBtn:
+                lastNameTV.setVisibility(View.VISIBLE);
+                lastNameEditBtn.setVisibility(View.VISIBLE);
+                lastNameET.setVisibility(View.GONE);
+                lastNameSaveBtn.setVisibility(View.GONE);
+                lastNameCancelBtn.setVisibility(View.GONE);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + button.getId());
+        }
     }
-
-    @OnClick(R.id.singleEmployeeDetailsNameSaveBtn)
-    void nameSaveBtnClicked() {
-        singleEmployeeDetailsViewModel.onNameSaveButtonClicked(clickedEmployee.getEmplId(), employeeNameET.getText().toString().trim());
-        Log.d(TAG, "name save button clicked");
-    }
-
-    @OnClick(R.id.singleEmployeeDetailsNameCancelBtn)
-    void onNameCancelBtnClicked() {
-        employeeNameTV.setVisibility(View.VISIBLE);
-        nameEditBtn.setVisibility(View.VISIBLE);
-
-        employeeNameET.setVisibility(View.GONE);
-        nameSaveBtn.setVisibility(View.GONE);
-        nameCancelBtn.setVisibility(View.GONE);
-    }
-
 
     private void onEmployeeNameUpdated(String name) {
-        employeeNameTV.setVisibility(View.VISIBLE);
+        nameTV.setVisibility(View.VISIBLE);
         nameEditBtn.setVisibility(View.VISIBLE);
-
-        employeeNameET.setVisibility(View.GONE);
+        nameET.setVisibility(View.GONE);
         nameSaveBtn.setVisibility(View.GONE);
         nameCancelBtn.setVisibility(View.GONE);
-
-        employeeNameTV.setText(name);
+        nameTV.setText(name);
     }
 
-    @OnClick(R.id.singleEmployeeDetailsLastNameEditBtn)
-    void onLastNameEditBtnClicked() {
-        employeeLastNameTV.setVisibility(View.GONE);
-        lastNameEditBtn.setVisibility(View.GONE);
-
-        employeeLastNameET.setVisibility(View.VISIBLE);
-        employeeLastNameET.setText(clickedEmployee.getLastName());
-        lastNameSaveBtn.setVisibility(View.VISIBLE);
-        lastNameCancelBtn.setVisibility(View.VISIBLE);
-    }
-
-    @OnClick(R.id.singleEmployeeDetailsLastNameCancelBtn)
-    void onLastNameCancelBtnClicked() {
-        employeeLastNameTV.setVisibility(View.VISIBLE);
+    private void onEmployeeLastNameUpdated(String lastName) {
+        lastNameTV.setVisibility(View.VISIBLE);
         lastNameEditBtn.setVisibility(View.VISIBLE);
-
-        employeeLastNameET.setVisibility(View.GONE);
+        lastNameET.setVisibility(View.GONE);
         lastNameSaveBtn.setVisibility(View.GONE);
         lastNameCancelBtn.setVisibility(View.GONE);
+        lastNameTV.setText(lastName);
     }
 }

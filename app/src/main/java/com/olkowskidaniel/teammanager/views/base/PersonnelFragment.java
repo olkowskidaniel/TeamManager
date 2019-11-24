@@ -114,16 +114,18 @@ public class PersonnelFragment extends Fragment {
     }
 
     private void onStartFragmentPassingEmployeeRequest(Employee employee) {
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        SingleEmployeeDetailsFragment singleEmployeeDetailsFragment = new SingleEmployeeDetailsFragment();
+        if(employee != null) {
+            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            SingleEmployeeDetailsFragment singleEmployeeDetailsFragment = new SingleEmployeeDetailsFragment();
 
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("employee", employee);
-        singleEmployeeDetailsFragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.base_fragment_container, singleEmployeeDetailsFragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("employee", employee);
+            singleEmployeeDetailsFragment.setArguments(bundle);
+            fragmentTransaction.replace(R.id.base_fragment_container, singleEmployeeDetailsFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
     }
 
     private void onEmployeesListUpdate(List<Employee> employeesList) {

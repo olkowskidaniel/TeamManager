@@ -59,6 +59,7 @@ public class PersonnelViewModel extends AndroidViewModel {
 
     public void onFragmentStarted() {
         EmployeesRepository.getInstance().getAllEmployees();
+        startFragmentPassingEmployeeEvent.setValue(null);
         Log.d(TAG, "Fragment started");
     }
 

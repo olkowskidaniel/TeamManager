@@ -22,12 +22,14 @@ public class Firestore {
     private MutableLiveData<List<Employee>> employeesListLiveData;
     private MutableLiveData<Boolean> employeeListChangedEvent;
     private MutableLiveData<String> employeeNameUpdatedEvent;
+    private MutableLiveData<String> employeeLastNameUpdatedEvent;
 
     public Firestore() {
         firebaseFirestore = FirebaseFirestore.getInstance();
         employeesListLiveData = new MutableLiveData<>();
         employeeListChangedEvent = new MutableLiveData<>();
         employeeNameUpdatedEvent = new MutableLiveData<>();
+        employeeLastNameUpdatedEvent = new MutableLiveData<>();
     }
 
     public void addToUsersCollection(Map<String, Object> userMap) {
@@ -85,6 +87,11 @@ public class Firestore {
         return employeeNameUpdatedEvent;
     }
 
+    public LiveData<String> getEmployeeLastNameUpdatedEvent() {
+        return employeeLastNameUpdatedEvent;
+    }
+
+
     public void deleteEmplFromDatabase(String currentUserEmail, String currentEmpId) {
         firebaseFirestore.collection("users")
                 .document(currentUserEmail)
@@ -106,5 +113,16 @@ public class Firestore {
                     Log.d(TAG, "Employee " + currentUserEmail + " name updated to " + name);
                     employeeNameUpdatedEvent.setValue(name);
                 });
+    }
+
+    public void updateEmployeeLastName(String currentUserEmail, String emplId, String lastName) {
+        firebaseFirestore.collection("users")
+                .document(currentUserEmail)
+                .collection("employees")
+                .document(emplId)
+                .update("lastName", lastName).addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Employee " + currentUserEmail + "last name updated to " + lastName);
+                    employeeLastNameUpdatedEvent.setValue(lastName);
+        });
     }
 }

@@ -21,6 +21,7 @@ public class SingleEmployeeDetailsViewModel extends AndroidViewModel {
     private MutableLiveData<String> employeeLastNameLiveData;
     private MutableLiveData<String> fragmentTitleLiveData;
     private LiveData<String> employeeNameUpdatedEvent = Transformations.map(EmployeesRepository.getInstance().getEmployeeNameUpdatedEvent(), name -> name);
+    private LiveData<String> employeeLastNameUpdatedEvent = Transformations.map(EmployeesRepository.getInstance().getEmployeeLastnameUpdatedEvent(), lastName -> lastName);
 
     private Employee employee;
 
@@ -59,7 +60,17 @@ public class SingleEmployeeDetailsViewModel extends AndroidViewModel {
         return employeeNameUpdatedEvent;
     }
 
+    public LiveData<String> getEmployeeLastNameUpdatedEvent() {
+        return employeeLastNameUpdatedEvent;
+    }
+
+
     public void onNameSaveButtonClicked(String emplId, String name) {
         EmployeesRepository.getInstance().updateEmployeeName(emplId, name);
     }
+
+    public void onLastNameSaveButtonClicked(String emplId, String lastName) {
+        EmployeesRepository.getInstance().updateEmployeeLastName(emplId, lastName);
+    }
+
 }
